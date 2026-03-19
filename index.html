@@ -768,80 +768,106 @@ function renderRiskiness(){
   if(!hasAny){el.innerHTML='<div class="empty-state"><span class="big">NO PICKS YET</span>Enter Round of 64 picks first.</div>';return;}
 
   var riskData=[];
-  for(var i=0;i<6;i++){var r=calcRiskiness(i);riskData.push({idx:i,name:players[i]||DEFAULT_NAMES[i],risk:r});}
-  riskData.sort(function(a,b){return b.risk.score-a.risk.score;});
-  var maxScore=riskData[0].risk.score||1;
+  for(var i=0;i<6;i++){
+    var r=calcRiskiness(i);
+    var totalPicks=Object.keys((picks[i]&&picks[i]['r64'])||{}).length;
+    var upsetCount=r.upsets.length;
+    var pct=totalPicks>0?Math.round(upsetCount/totalPicks*100):0;
+    riskData.push({idx:i,name:players[i]||DEFAULT_NAMES[i],risk:r,upsetCount:upsetCount,totalPicks:totalPicks,pct:pct});
+  }
+  riskData.sort(function(a,b){return b.pct-a.pct;});
+  var maxPct=riskData[0].pct||1;
 
-  // Most dangerous pick across all players
-  var dangerPick=null,dangerPlayer=null;
-  for(var i=0;i<riskData.length;i++){
-    var upsets=riskData[i].risk.upsets;
-    for(var u=0;u<upsets.length;u++){
-      if(!dangerPick||upsets[u].seed>dangerPick.seed){dangerPick=upsets[u];dangerPlayer=riskData[i];}
-    }
+  // Find highest seed across all upset picks
+  var maxSeed=0;
+  for(var i=0;i<riskData.length;i++)
+    for(var u=0;u<riskData[i].risk.upsets.length;u++)
+      if(riskData[i].risk.upsets[u].seed>maxSeed) maxSeed=riskData[i].risk.upsets[u].seed;
+
+  // All banners at that max seed (one per player/pick combo)
+  var dangerBanners=[];
+  if(maxSeed>0){
+    for(var i=0;i<riskData.length;i++)
+      for(var u=0;u<riskData[i].risk.upsets.length;u++)
+        if(riskData[i].risk.upsets[u].seed===maxSeed)
+          dangerBanners.push({player:riskData[i],pick:riskData[i].risk.upsets[u]});
   }
 
-  var labelEmoji={'Chalk Monster':'😴','Playing It Safe':'🤔','Cautiously Bold':'😏','Chaos Agent':'🔥','Absolute Maniac':'🤯'};
+  var labelColors={'Chalk Monster':'#7a8c8a','Playing It Safe':'#1e6091','Cautiously Bold':'#2d6a4f','Chaos Agent':'#b5620a','Absolute Maniac':'#9b2335'};
+  var labelEmoji={'Chalk Monster':'&#128564;','Playing It Safe':'&#129300;','Cautiously Bold':'&#128527;','Chaos Agent':'&#128293;','Absolute Maniac':'&#129327;'};
   var html='';
 
-  // Most Dangerous Pick callout
-  if(dangerPick){
-    html+='<div style="background:var(--green-dark);border-radius:14px;padding:1.5rem;margin-bottom:1.75rem;color:#fff;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap">';
-    html+='<div style="font-size:2.5rem">&#128293;</div>';
-    html+='<div style="flex:1">';
-    html+='<div style="font-family:Bebas Neue,sans-serif;font-size:0.75rem;letter-spacing:2px;color:'+COLORS[dangerPlayer.idx]+';margin-bottom:0.2rem">MOST DANGEROUS PICK</div>';
-    html+='<div style="font-family:Bebas Neue,sans-serif;font-size:1.75rem;letter-spacing:2px;color:#fff;line-height:1.1">'+dangerPick.team+'</div>';
-    html+='<div style="font-size:0.82rem;color:rgba(255,255,255,0.7);margin-top:0.25rem">('+dangerPick.seed+'-seed) over '+dangerPick.opp+' ('+dangerPick.oppSeed+'-seed) &mdash; picked by <strong style="color:#fff">'+dangerPlayer.name+'</strong></div>';
-    html+='</div>';
-    html+='<div style="text-align:center"><div style="font-family:Bebas Neue,sans-serif;font-size:3rem;color:'+COLORS[dangerPlayer.idx]+';line-height:1">'+dangerPick.seed+'</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase">Seed</div></div>';
-    html+='</div>';
+  // Most Dangerous Pick banners
+  if(dangerBanners.length>0){
+    html+='<div style="margin-bottom:1.75rem">';
+    html+='<div style="font-family:Bebas Neue,sans-serif;font-size:0.72rem;letter-spacing:2px;color:var(--muted);margin-bottom:0.6rem">&#128293; MOST DANGEROUS PICK'+(dangerBanners.length>1?'S':'')+'</div>';
+    html+='<div style="display:flex;flex-direction:column;gap:0.5rem">';
+    for(var bi=0;bi<dangerBanners.length;bi++){
+      var b=dangerBanners[bi];
+      html+='<div style="background:var(--green-dark);border-radius:12px;padding:1.1rem 1.4rem;color:#fff;display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap">';
+      html+='<div style="flex:1;min-width:160px">';
+      html+='<div style="font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:'+COLORS[b.player.idx]+';margin-bottom:0.2rem;font-weight:700">'+b.player.name+'</div>';
+      html+='<div style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;letter-spacing:2px;line-height:1.1">'+b.pick.team+'</div>';
+      html+='<div style="font-size:0.78rem;color:rgba(255,255,255,0.65);margin-top:0.2rem">'+b.pick.seed+'-seed over '+b.pick.opp+' ('+b.pick.oppSeed+'-seed)</div>';
+      html+='</div>';
+      html+='<div style="text-align:center;background:rgba(255,255,255,0.08);border-radius:8px;padding:0.5rem 0.9rem">';
+      html+='<div style="font-family:Bebas Neue,sans-serif;font-size:2.5rem;color:'+COLORS[b.player.idx]+';line-height:1">'+b.pick.seed+'</div>';
+      html+='<div style="font-size:0.62rem;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase">seed</div>';
+      html+='</div></div>';
+    }
+    html+='</div></div>';
   }
 
-  // Player cards
-  html+='<div style="display:flex;flex-direction:column;gap:0.75rem">';
+  // Sports card grid
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem">';
   for(var si=0;si<riskData.length;si++){
     var d=riskData[si];
-    var barPct=Math.round(d.risk.score/maxScore*100);
     var rank=si+1;
-    var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'';
-    var emoji=labelEmoji[d.risk.label]||'';
-    var rcls=rank<=3?' rank-'+rank:'';
+    var barPct=Math.round(d.pct/maxPct*100);
+    var lcolor=labelColors[d.risk.label]||'var(--green)';
+    var lemoji=labelEmoji[d.risk.label]||'';
 
-    html+='<div class="lb-row'+rcls+'" style="flex-direction:column;align-items:stretch;gap:0.6rem;padding:1rem 1.1rem">';
-
-    // Top row: rank, name, label, score
-    html+='<div style="display:flex;align-items:center;gap:0.75rem">';
-    if(medal)html+='<span style="font-size:1.3rem;width:28px;text-align:center;flex-shrink:0">'+medal+'</span>';
-    else html+='<span style="font-family:Bebas Neue,sans-serif;font-size:1.2rem;width:28px;text-align:center;color:var(--muted);flex-shrink:0">'+rank+'</span>';
-    html+='<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+COLORS[d.idx]+';flex-shrink:0"></span>';
-    html+='<span style="font-weight:600;font-size:0.95rem;flex:1">'+d.name+'</span>';
-    html+='<span style="font-size:0.8rem;color:var(--muted)">'+emoji+' '+d.risk.label+'</span>';
-    html+='<span style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;color:var(--green-dark);margin-left:0.75rem">'+d.risk.score+'</span>';
+    html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.07)">';
+    // Header strip
+    html+='<div style="background:'+COLORS[d.idx]+';padding:0.75rem 1rem;display:flex;align-items:center;justify-content:space-between">';
+    html+='<div style="font-family:Bebas Neue,sans-serif;font-size:1.2rem;letter-spacing:2px;color:#fff">'+d.name+'</div>';
+    html+='<div style="font-size:0.68rem;background:rgba(255,255,255,0.2);color:#fff;padding:0.15rem 0.5rem;border-radius:20px;font-weight:700">RANK #'+rank+'</div>';
     html+='</div>';
-
-    // Bar (relative to group max)
-    html+='<div style="position:relative;height:8px;background:var(--border);border-radius:4px;overflow:hidden">';
+    // Body
+    html+='<div style="padding:1rem">';
+    // Big pct
+    html+='<div style="display:flex;align-items:flex-end;gap:0.75rem;margin-bottom:0.9rem">';
+    html+='<div style="font-family:Bebas Neue,sans-serif;font-size:3.5rem;line-height:1;color:'+COLORS[d.idx]+'">'+d.pct+'<span style="font-size:1.5rem">%</span></div>';
+    html+='<div style="padding-bottom:0.4rem">';
+    html+='<div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">upset rate</div>';
+    html+='<div style="font-size:0.78rem;color:var(--muted)">'+d.upsetCount+' upset'+(d.upsetCount!==1?'s':'')+' / '+d.totalPicks+' picks</div>';
+    html+='</div></div>';
+    // Label
+    html+='<div style="display:inline-flex;align-items:center;gap:0.3rem;background:'+lcolor+';color:#fff;font-size:0.73rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:20px;margin-bottom:0.85rem">'+lemoji+' '+d.risk.label+'</div>';
+    // Bar
+    html+='<div style="margin-bottom:0.85rem">';
+    html+='<div style="font-size:0.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.28rem">Riskiness vs group</div>';
+    html+='<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">';
     html+='<div style="height:100%;width:'+barPct+'%;background:'+COLORS[d.idx]+';border-radius:4px;transition:width 0.5s"></div>';
-    html+='</div>';
-
-    // Upset picks list
+    html+='</div></div>';
+    // Upset picks
     if(d.risk.upsets.length>0){
-      html+='<div style="display:flex;flex-wrap:wrap;gap:0.35rem">';
+      html+='<div style="font-size:0.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.35rem">Upset picks</div>';
+      html+='<div style="display:flex;flex-wrap:wrap;gap:0.28rem">';
       for(var u=0;u<d.risk.upsets.length;u++){
         var up=d.risk.upsets[u];
-        html+='<span style="font-size:0.7rem;background:var(--green-pale);color:var(--green-dark);padding:0.18rem 0.55rem;border-radius:20px;font-weight:600">';
-        html+=up.seed+'-seed '+up.team+' over '+up.opp;
-        html+='</span>';
+        html+='<span style="font-size:0.7rem;background:var(--green-pale);color:var(--green-dark);padding:0.15rem 0.5rem;border-radius:20px;font-weight:600">'+up.seed+'-seed '+up.team+'</span>';
       }
       html+='</div>';
     } else {
-      html+='<div style="font-size:0.72rem;color:var(--muted);font-style:italic">No upset picks — pure chalk</div>';
+      html+='<div style="font-size:0.75rem;color:var(--muted);font-style:italic;padding-top:0.25rem">Pure chalk</div>';
     }
-    html+='</div>';
+    html+='</div></div>';
   }
   html+='</div>';
   el.innerHTML=html;
 }
+
 
 // ══════════════════════════════
 //  SUMMARY PAGE
