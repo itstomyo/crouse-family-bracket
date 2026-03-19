@@ -731,6 +731,40 @@ function calcScore(pIdx){
   return{total:total,breakdown:bd};
 }
 
+function calcRiskiness(pIdx) {
+  var score=0, upsets=[];
+  var r64flat=getR64Flat();
+  for(var i=0;i<r64flat.length;i++){
+    var m=r64flat[i];
+    var pick=picks[pIdx]&&picks[pIdx]['r64']?picks[pIdx]['r64'][m.id]:null;
+    if(!pick)continue;
+    if(pick===m.t1&&m.s1>m.s2){score+=m.s1;upsets.push({team:m.t1,seed:m.s1,round:'R64'});}
+    else if(pick===m.t2&&m.s2>m.s1){score+=m.s2;upsets.push({team:m.t2,seed:m.s2,round:'R64'});}
+  }
+  var laterRounds=['r32','s16','e8','ff','champ'];
+  var roundShort={r32:'R32',s16:'S16',e8:'E8',ff:'FF',champ:'Champ'};
+  for(var ri=0;ri<laterRounds.length;ri++){
+    var rk=laterRounds[ri];
+    var matchups=getMatchupsForRound(rk,pIdx);
+    var rp=picks[pIdx]&&picks[pIdx][rk]?picks[pIdx][rk]:{};
+    for(var mi=0;mi<matchups.length;mi++){
+      var m2=matchups[mi];
+      var pick2=rp[m2.id];
+      if(!pick2||!m2.t1||!m2.t2)continue;
+      var seed1=getSeedOfTeam(m2.t1),seed2=getSeedOfTeam(m2.t2);
+      if(pick2===m2.t1&&seed1>seed2){score+=seed1;upsets.push({team:m2.t1,seed:seed1,round:roundShort[rk]});}
+      else if(pick2===m2.t2&&seed2>seed1){score+=seed2;upsets.push({team:m2.t2,seed:seed2,round:roundShort[rk]});}
+    }
+  }
+  var label,emoji;
+  if(score===0){label='Chalk Monster';emoji='zz';}
+  else if(score<=15){label='Playing It Safe';emoji='hmm';}
+  else if(score<=35){label='Cautiously Bold';emoji='fire';}
+  else if(score<=60){label='Chaos Agent';emoji='boom';}
+  else{label='Absolute Maniac';emoji='wild';}
+  return{score:score,label:label,emoji:emoji,upsets:upsets};
+}
+
 // ══════════════════════════════
 //  SUMMARY PAGE
 // ══════════════════════════════
@@ -808,6 +842,34 @@ function renderSummary(){
     }
   }
   html+='</div>';
+
+  // -- RISKINESS --
+  html+='<div class="section-title">BRACKET RISKINESS</div><div class="section-box">';
+  html+='<p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Score = sum of seeds of all upset picks across the full bracket. The higher the score, the more chaos you are betting on.</p>';
+  var riskScores=[];
+  for(var i=0;i<6;i++){var rsk=calcRiskiness(i);riskScores.push({idx:i,name:players[i]||DEFAULT_NAMES[i],risk:rsk});}
+  riskScores.sort(function(a,b){return b.risk.score-a.risk.score;});
+  html+='<div class="leaderboard">';
+  for(var si=0;si<riskScores.length;si++){
+    var rs=riskScores[si];
+    var maxScore=riskScores[0].risk.score;
+    var barPct=maxScore>0?Math.round(rs.risk.score/maxScore*100):0;
+    var upsetList=rs.risk.upsets.map(function(u){return u.team+' ('+u.seed+'-seed, '+u.round+')';}).join(', ');
+    var riskLabels={'Chalk Monster':'😴 Chalk Monster','Playing It Safe':'🤔 Playing It Safe','Cautiously Bold':'😏 Cautiously Bold','Chaos Agent':'🔥 Chaos Agent','Absolute Maniac':'🤯 Absolute Maniac'};
+    var labelDisplay=riskLabels[rs.risk.label]||rs.risk.label;
+    html+='<div class="lb-row" style="flex-direction:column;align-items:flex-start;gap:0.4rem">';
+    html+='<div style="display:flex;align-items:center;gap:0.75rem;width:100%">';
+    html+='<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+COLORS[rs.idx]+';flex-shrink:0"></span>';
+    html+='<span style="font-weight:600;font-size:0.93rem;flex:1">'+rs.name+'</span>';
+    html+='<span style="font-size:0.78rem;color:var(--muted);margin-right:0.75rem">'+labelDisplay+'</span>';
+    html+='<span style="font-family:\"Bebas Neue\",sans-serif;font-size:1.5rem;color:var(--green-dark)">'+rs.risk.score+' pts</span>';
+    html+='</div>';
+    html+='<div style="width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+barPct+'%;background:'+COLORS[rs.idx]+';border-radius:3px"></div></div>';
+    if(upsetList)html+='<div style="font-size:0.68rem;color:var(--muted);font-style:italic">Upset picks: '+upsetList+'</div>';
+    else html+='<div style="font-size:0.68rem;color:var(--muted);font-style:italic">No upset picks chosen</div>';
+    html+='</div>';
+  }
+  html+='</div></div>';
 
   // ── COMPLETION ──
   html+='<div class="section-title">📋 PICKS COMPLETED</div><div class="section-box"><div class="completion-grid">';
