@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crouse Family Brackets 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --surface: #161920;
+  --surface2: #1e222c;
+  --border: #2a2f3d;
+  --accent: #f97316;
+  --accent2: #fbbf24;
+  --green: #22c55e;
+  --text: #e8eaf0;
+  --muted: #6b7280;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* HEADER */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 1rem;
+}
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px; color: var(--accent); white-space: nowrap; }
+.logo span { color: var(--text); }
+
+/* NAV TABS */
+nav { display: flex; gap: 0.25rem; background: var(--surface2); padding: 0.25rem; border-radius: 8px; }
+nav button {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+  transition: all 0.15s;
+}
+nav button.active { background: var(--accent); color: #fff; }
+nav button:hover:not(.active) { color: var(--text); background: var(--border); }
+
+/* PAGES */
+.page { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* SETUP */
+.setup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.player-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+.player-card label { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+.color-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.player-card input[type="text"] {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.player-card input:focus { border-color: var(--accent); }
+.btn-primary {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  padding: 0.75rem 2rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.saved-badge { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; font-weight: 600; color: var(--green); opacity: 0; transition: opacity 0.3s; margin-left: 1rem; }
+.saved-badge.show { opacity: 1; }
+
+/* PICKS PAGE */
+.picks-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+.picks-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 2px; }
+.player-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.player-tab {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--muted);
+  transition: all 0.15s;
+  user-select: none;
+}
+.player-tab.active { color: #fff; border-color: transparent; }
+.round-tabs { display: flex; gap: 0.25rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.round-tab {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.round-tab.active { background: var(--surface2); color: var(--text); border-color: var(--accent); }
+.round-tab:hover:not(.active) { color: var(--text); }
+
+/* MATCHUP CARDS */
+.region-header {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 3px;
+  margin: 1.5rem 0 0.75rem;
+  color: var(--accent2);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.region-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.matchup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem; }
+.matchup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.matchup-card-header { padding: 0.45rem 0.75rem; background: var(--surface2); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+.team-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.1s;
+  border: 2px solid transparent;
+  border-radius: 0;
+}
+.team-row + .team-row { border-top: 1px solid var(--border); }
+.team-row:hover:not(.locked) { background: var(--surface2); }
+.team-row.selected { background: rgba(249,115,22,0.12); border-color: var(--accent); }
+.team-row.locked { opacity: 0.4; cursor: not-allowed; }
+.seed { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); width: 16px; text-align: center; flex-shrink: 0; }
+.team-name { flex: 1; font-size: 0.88rem; font-weight: 500; }
+.pick-check { font-size: 0.8rem; color: var(--accent); font-weight: 700; opacity: 0; transition: opacity 0.1s; }
+.team-row.selected .pick-check { opacity: 1; }
+
+/* PROGRESS */
+.progress-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 0.35rem; font-family: 'DM Mono', monospace; }
+.progress-bar-outer { width: 160px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.progress-bar-inner { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.9rem; }
+.empty-state .big { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--border); letter-spacing: 3px; display: block; margin-bottom: 0.5rem; }
+
+/* SUMMARY */
+.summary-section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 3px; color: var(--accent2); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+.section-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.75rem; }
+.champ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 0.75rem; margin-bottom: 1.75rem; }
+.champ-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+.champ-player { font-size: 0.68rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+.champ-team { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px; color: var(--accent2); }
+.champ-no-pick { color: var(--muted); font-size: 0.8rem; font-style: italic; }
+.agree-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+.agree-card.split { border-color: var(--accent); }
+.agree-matchup { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+.agree-match-title { font-size: 0.9rem; font-weight: 600; }
+.agree-region { font-size: 0.7rem; color: var(--muted); }
+.bar-row { margin-bottom: 0.6rem; }
+.bar-row:last-child { margin-bottom: 0; }
+.bar-label { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.3rem; }
+.bar-label-name { font-weight: 600; }
+.bar-label-count { color: var(--muted); font-family: 'DM Mono', monospace; }
+.agree-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 0.35rem; }
+.agree-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+.picker-pills { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.picker-pill { font-size: 0.7rem; font-weight: 600; padding: 0.18rem 0.55rem; border-radius: 20px; color: #fff; }
+.split-badge { display: inline-block; font-size: 0.68rem; font-weight: 700; color: var(--accent); margin-top: 0.5rem; letter-spacing: 0.5px; }
+.completion-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.75rem; }
+.completion-card { background: var(--surface2); border-radius: 8px; padding: 0.85rem; }
+.completion-name { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; }
+.completion-count { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.4rem; }
+.completion-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.completion-bar-fill { height: 100%; border-radius: 2px; }
+
+@media (max-width: 600px) {
+  .page { padding: 1rem; }
+  header { padding: 0 1rem; }
+  .logo { font-size: 1.2rem; }
+  nav button { padding: 0.35rem 0.6rem; font-size: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">CROUSE FAMILY <span>BRACKETS</span></div>
+  <nav>
+    <button onclick="showPage('setup')">Setup</button>
+    <button onclick="showPage('picks')">Picks</button>
+    <button onclick="showPage('summary')">Summary</button>
+  </nav>
+</header>
+
+<!-- SETUP -->
+<div id="page-setup" class="page active">
+  <div style="margin-bottom:2rem">
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;margin-bottom:0.4rem">BRACKET SETUP</h1>
+    <p style="color:var(--muted);font-size:0.9rem">Enter the names of all six players, then head to Picks.</p>
+  </div>
+  <div class="setup-grid" id="setupGrid"></div>
+  <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+    <button class="btn-primary" onclick="saveNames()">SAVE NAMES &amp; GO TO PICKS →</button>
+    <span class="saved-badge" id="savedBadge">✓ Saved!</span>
+  </div>
+</div>
+
+<!-- PICKS -->
+<div id="page-picks" class="page">
+  <div class="picks-header">
+    <div class="picks-title">ENTER PICKS</div>
+    <div>
+      <div class="progress-label" id="progressLabel">0 / 63 picks made</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="player-tabs" id="playerTabs"></div>
+  <div class="round-tabs" id="roundTabs"></div>
+  <div id="matchupArea"></div>
+</div>
+
+<!-- SUMMARY -->
+<div id="page-summary" class="page">
+  <div style="margin-bottom:1.5rem">
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;margin-bottom:0.4rem">BRACKET SUMMARY</h1>
+    <p style="color:var(--muted);font-size:0.9rem">Overview of all picks, agreements, and champion selections.</p>
+  </div>
+  <div id="summaryContent"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  CONSTANTS
+// ─────────────────────────────────────────────
+const COLORS = ['#f97316','#3b82f6','#22c55e','#a855f7','#ec4899','#14b8a6'];
+const DEFAULT_NAMES = ['Player 1','Player 2','Player 3','Player 4','Player 5','Player 6'];
+const REGIONS = ['South','East','West','Midwest'];
+const ROUND_KEYS = ['r64','r32','s16','e8','ff','champ'];
+const ROUND_LABELS = {'r64':'Round of 64','r32':'Round of 32','s16':'Sweet 16','e8':'Elite 8','ff':'Final Four','champ':'Championship'};
+const ROUND_SIZES = {r64:32,r32:16,s16:8,e8:4,ff:2,champ:1};
+
+// 2026 NCAA Tournament Bracket (actual field)
+const R64 = {
+  South: [
+    {id:'S1', s1:1,  t1:'Duke',           s2:16, t2:'Siena'},
+    {id:'S2', s1:8,  t1:'Vanderbilt',     s2:9,  t2:'McNeese'},
+    {id:'S3', s1:5,  t1:'Michigan',       s2:12, t2:'Howard'},
+    {id:'S4', s1:4,  t1:'Texas A&M',      s2:13, t2:"Saint Mary's"},
+    {id:'S5', s1:6,  t1:'BYU',            s2:11, t2:'Texas'},
+    {id:'S6', s1:3,  t1:'Wisconsin',      s2:14, t2:'High Point'},
+    {id:'S7', s1:7,  t1:'Louisville',     s2:10, t2:'South Florida'},
+    {id:'S8', s1:2,  t1:'Alabama',        s2:15, t2:'Hofstra'},
+  ],
+  East: [
+    {id:'E1', s1:1,  t1:'Tennessee',      s2:16, t2:'First Four W1'},
+    {id:'E2', s1:8,  t1:'Clemson',        s2:9,  t2:'Iowa'},
+    {id:'E3', s1:5,  t1:'Georgia',        s2:12, t2:'Saint Louis'},
+    {id:'E4', s1:4,  t1:'Illinois',       s2:13, t2:'Penn'},
+    {id:'E5', s1:6,  t1:'UNC',            s2:11, t2:'VCU'},
+    {id:'E6', s1:3,  t1:'Ohio State',     s2:14, t2:'TCU'},
+    {id:'E7', s1:7,  t1:'Villanova',      s2:10, t2:'Utah State'},
+    {id:'E8', s1:2,  t1:'Michigan State', s2:15, t2:'N. Dakota State'},
+  ],
+  West: [
+    {id:'W1', s1:1,  t1:'Florida',        s2:16, t2:'Prairie View'},
+    {id:'W2', s1:8,  t1:'Gonzaga',        s2:9,  t2:'Kennesaw State'},
+    {id:'W3', s1:5,  t1:'Purdue',         s2:12, t2:'Queens University'},
+    {id:'W4', s1:4,  t1:'Kansas',         s2:13, t2:'California Baptist'},
+    {id:'W5', s1:6,  t1:"St. John's",     s2:11, t2:'Northern Iowa'},
+    {id:'W6', s1:3,  t1:'Houston',        s2:14, t2:'Idaho'},
+    {id:'W7', s1:7,  t1:'UCLA',           s2:10, t2:'UCF'},
+    {id:'W8', s1:2,  t1:'Iowa State',     s2:15, t2:'Tennessee State'},
+  ],
+  Midwest: [
+    {id:'M1', s1:1,  t1:'Kentucky',       s2:16, t2:'Santa Clara'},
+    {id:'M2', s1:8,  t1:'Virginia',       s2:9,  t2:'Wright State'},
+    {id:'M3', s1:5,  t1:'Arkansas',       s2:12, t2:"Hawai'i"},
+    {id:'M4', s1:4,  t1:'Texas Tech',     s2:13, t2:'Akron'},
+    {id:'M5', s1:6,  t1:'Arizona',        s2:11, t2:'LIU'},
+    {id:'M6', s1:3,  t1:'Nebraska',       s2:14, t2:'Troy'},
+    {id:'M7', s1:7,  t1:'Mississippi',    s2:10, t2:'New Mexico'},
+    {id:'M8', s1:2,  t1:'Auburn',         s2:15, t2:'First Four W2'},
+  ],
+};
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let players = ['','','','','',''];
+let picks = {};
+let currentPlayer = 0;
+let currentRound = 'r64';
+
+function initPicks() {
+  for (let p = 0; p < 6; p++) {
+    if (!picks[p]) picks[p] = {};
+    for (const r of ROUND_KEYS) {
+      if (!picks[p][r]) picks[p][r] = {};
+    }
+  }
+}
+initPicks();
+
+// ─────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('nav button').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('page-' + name).classList.add('active');
+  var idx = ['setup','picks','summary'].indexOf(name);
+  document.querySelectorAll('nav button')[idx].classList.add('active');
+  if (name === 'picks') renderPicksPage();
+  if (name === 'summary') renderSummary();
+}
+
+// ─────────────────────────────────────────────
+//  SETUP PAGE
+// ─────────────────────────────────────────────
+function renderSetup() {
+  var g = document.getElementById('setupGrid');
+  var html = '';
+  for (var i = 0; i < 6; i++) {
+    html += '<div class="player-card">' +
+      '<label><span class="color-dot" style="background:' + COLORS[i] + '"></span>Player ' + (i+1) + '</label>' +
+      '<input type="text" id="pname' + i + '" placeholder="Enter name…" value="' + (players[i] || '') + '" maxlength="20">' +
+      '</div>';
+  }
+  g.innerHTML = html;
+}
+
+function saveNames() {
+  for (var i = 0; i < 6; i++) {
+    var v = document.getElementById('pname' + i).value.trim();
+    players[i] = v || DEFAULT_NAMES[i];
+  }
+  var badge = document.getElementById('savedBadge');
+  badge.classList.add('show');
+  setTimeout(function(){ badge.classList.remove('show'); }, 2000);
+  showPage('picks');
+}
+
+// ─────────────────────────────────────────────
+//  PICKS PAGE
+// ─────────────────────────────────────────────
+function renderPicksPage() {
+  renderPlayerTabs();
+  renderRoundTabs();
+  renderMatchups();
+  updateProgress();
+}
+
+function renderPlayerTabs() {
+  var el = document.getElementById('playerTabs');
+  var html = '';
+  for (var i = 0; i < 6; i++) {
+    var name = players[i] || DEFAULT_NAMES[i];
+    var activeStyle = (i === currentPlayer)
+      ? 'background:' + COLORS[i] + ';border-color:' + COLORS[i] + ';color:#fff;'
+      : '';
+    var activeClass = (i === currentPlayer) ? ' active' : '';
+    html += '<div class="player-tab' + activeClass + '" style="' + activeStyle + '" onclick="selectPlayer(' + i + ')">' + name + '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function selectPlayer(i) {
+  currentPlayer = i;
+  renderPlayerTabs();
+  renderMatchups();
+  updateProgress();
+}
+
+function renderRoundTabs() {
+  var el = document.getElementById('roundTabs');
+  var html = '';
+  for (var i = 0; i < ROUND_KEYS.length; i++) {
+    var key = ROUND_KEYS[i];
+    var cls = (key === currentRound) ? ' active' : '';
+    html += '<button class="round-tab' + cls + '" onclick="selectRound(\'' + key + '\')">' + ROUND_LABELS[key] + '</button>';
+  }
+  el.innerHTML = html;
+}
+
+function selectRound(key) {
+  currentRound = key;
+  renderRoundTabs();
+  renderMatchups();
+}
+
+// Get all 32 R64 matchups in order (flat list, preserving pairing structure)
+function getR64Flat() {
+  var result = [];
+  for (var r = 0; r < REGIONS.length; r++) {
+    var reg = REGIONS[r];
+    var games = R64[reg];
+    for (var g = 0; g < games.length; g++) {
+      result.push(Object.assign({region: reg}, games[g]));
+    }
+  }
+  return result;
+}
+
+// Build matchups for a given round based on current player's picks
+function getMatchupsForRound(roundKey, pIdx) {
+  if (pIdx === undefined) pIdx = currentPlayer;
+  if (roundKey === 'r64') return getR64Flat();
+
+  var prevKey = ROUND_KEYS[ROUND_KEYS.indexOf(roundKey) - 1];
+  var prevMatchups = getMatchupsForRound(prevKey, pIdx);
+  var result = [];
+  for (var i = 0; i < prevMatchups.length; i += 2) {
+    var a = prevMatchups[i];
+    var b = prevMatchups[i + 1];
+    var pickA = (picks[pIdx] && picks[pIdx][prevKey]) ? picks[pIdx][prevKey][a.id] : null;
+    var pickB = (picks[pIdx] && picks[pIdx][prevKey]) ? picks[pIdx][prevKey][b.id] : null;
+    var newId = roundKey + '_m' + (i / 2);
+    result.push({
+      id: newId,
+      region: a.region,
+      s1: null, t1: pickA || null,
+      s2: null, t2: pickB || null,
+      locked1: !pickA,
+      locked2: !pickB,
+    });
+  }
+  return result;
+}
+
+function renderMatchups() {
+  var area = document.getElementById('matchupArea');
+  var matchups = getMatchupsForRound(currentRound);
+  var html = '';
+
+  if (currentRound === 'r64') {
+    for (var r = 0; r < REGIONS.length; r++) {
+      var reg = REGIONS[r];
+      var regGames = matchups.filter(function(m){ return m.region === reg; });
+      html += '<div class="region-header">' + reg + ' Region</div><div class="matchup-grid">';
+      for (var g = 0; g < regGames.length; g++) html += buildCard(regGames[g]);
+      html += '</div>';
+    }
+  } else if (currentRound === 'ff' || currentRound === 'champ') {
+    html += '<div class="matchup-grid">';
+    for (var i = 0; i < matchups.length; i++) html += buildCard(matchups[i]);
+    html += '</div>';
+  } else {
+    for (var r = 0; r < REGIONS.length; r++) {
+      var reg = REGIONS[r];
+      var regGames = matchups.filter(function(m){ return m.region === reg; });
+      if (regGames.length === 0) continue;
+      html += '<div class="region-header">' + reg + ' Region</div><div class="matchup-grid">';
+      for (var g = 0; g < regGames.length; g++) html += buildCard(regGames[g]);
+      html += '</div>';
+    }
+    if (!html) html = '<div class="empty-state"><span class="big">NO GAMES YET</span>Complete previous rounds first.</div>';
+  }
+  area.innerHTML = html;
+}
+
+function buildCard(m) {
+  var picked = picks[currentPlayer] && picks[currentPlayer][currentRound] ? picks[currentPlayer][currentRound][m.id] : null;
+  var sel1 = (picked && picked === m.t1) ? ' selected' : '';
+  var sel2 = (picked && picked === m.t2) ? ' selected' : '';
+  var lk1 = m.locked1 ? ' locked' : '';
+  var lk2 = m.locked2 ? ' locked' : '';
+
+  var t1display = m.t1 || '<span style="color:var(--muted);font-style:italic;font-size:0.8rem">Pending pick</span>';
+  var t2display = m.t2 || '<span style="color:var(--muted);font-style:italic;font-size:0.8rem">Pending pick</span>';
+
+  var seed1 = m.s1 ? '<span class="seed">' + m.s1 + '</span>' : '<span class="seed">—</span>';
+  var seed2 = m.s2 ? '<span class="seed">' + m.s2 + '</span>' : '<span class="seed">—</span>';
+
+  var click1 = (!m.locked1 && m.t1) ? ' onclick="makePick(' + currentPlayer + ',\'' + currentRound + '\',\'' + m.id + '\',\'' + m.t1.replace(/'/g, "\\'").replace(/"/g, '&quot;') + '\')"' : '';
+  var click2 = (!m.locked2 && m.t2) ? ' onclick="makePick(' + currentPlayer + ',\'' + currentRound + '\',\'' + m.id + '\',\'' + m.t2.replace(/'/g, "\\'").replace(/"/g, '&quot;') + '\')"' : '';
+
+  var label = m.region ? m.region + ' · ' + m.id : m.id;
+
+  return '<div class="matchup-card">' +
+    '<div class="matchup-card-header">' + label + '</div>' +
+    '<div>' +
+      '<div class="team-row' + sel1 + lk1 + '"' + click1 + '>' +
+        seed1 +
+        '<span class="team-name">' + t1display + '</span>' +
+        '<span class="pick-check">✓</span>' +
+      '</div>' +
+      '<div class="team-row' + sel2 + lk2 + '"' + click2 + '>' +
+        seed2 +
+        '<span class="team-name">' + t2display + '</span>' +
+        '<span class="pick-check">✓</span>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function makePick(pIdx, roundKey, matchId, teamName) {
+  if (!picks[pIdx]) picks[pIdx] = {};
+  if (!picks[pIdx][roundKey]) picks[pIdx][roundKey] = {};
+  picks[pIdx][roundKey][matchId] = teamName;
+  clearDownstream(pIdx, roundKey, matchId);
+  renderMatchups();
+  updateProgress();
+}
+
+function clearDownstream(pIdx, roundKey, matchId) {
+  var ri = ROUND_KEYS.indexOf(roundKey);
+  if (ri >= ROUND_KEYS.length - 1) return;
+  var nextRound = ROUND_KEYS[ri + 1];
+  var curMatchups = getMatchupsForRound(roundKey, pIdx);
+  var idx = -1;
+  for (var i = 0; i < curMatchups.length; i++) {
+    if (curMatchups[i].id === matchId) { idx = i; break; }
+  }
+  if (idx < 0) return;
+  var nextIdx = Math.floor(idx / 2);
+  var nextMatchups = getMatchupsForRound(nextRound, pIdx);
+  if (nextMatchups[nextIdx]) {
+    var nid = nextMatchups[nextIdx].id;
+    if (picks[pIdx][nextRound]) delete picks[pIdx][nextRound][nid];
+    clearDownstream(pIdx, nextRound, nid);
+  }
+}
+
+function updateProgress() {
+  var total = 63, made = 0;
+  for (var i = 0; i < ROUND_KEYS.length; i++) {
+    made += Object.keys((picks[currentPlayer] && picks[currentPlayer][ROUND_KEYS[i]]) || {}).length;
+  }
+  document.getElementById('progressLabel').textContent = made + ' / 63 picks made';
+  document.getElementById('progressBar').style.width = Math.round(made / total * 100) + '%';
+}
+
+// ─────────────────────────────────────────────
+//  SUMMARY PAGE
+// ─────────────────────────────────────────────
+function renderSummary() {
+  var el = document.getElementById('summaryContent');
+  var hasAny = false;
+  for (var p = 0; p < 6; p++) {
+    for (var ri = 0; ri < ROUND_KEYS.length; ri++) {
+      if (Object.keys((picks[p] && picks[p][ROUND_KEYS[ri]]) || {}).length > 0) { hasAny = true; break; }
+    }
+  }
+
+  if (!hasAny) {
+    el.innerHTML = '<div class="empty-state"><span class="big">NO PICKS YET</span>Go to the Picks tab to start entering brackets.</div>';
+    return;
+  }
+
+  var html = '';
+
+  // Champion picks
+  html += '<div class="summary-section-title">🏆 CHAMPION PICKS</div>';
+  html += '<div class="champ-grid">';
+  for (var i = 0; i < 6; i++) {
+    var name = players[i] || DEFAULT_NAMES[i];
+    var champPicks = picks[i] && picks[i]['champ'] ? Object.values(picks[i]['champ']) : [];
+    var champTeam = champPicks.length > 0 ? champPicks[0] : null;
+    html += '<div class="champ-card">' +
+      '<div class="champ-player"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:' + COLORS[i] + ';margin-right:5px;vertical-align:middle"></span>' + name + '</div>' +
+      (champTeam ? '<div class="champ-team">' + champTeam + '</div>' : '<div class="champ-no-pick">No pick yet</div>') +
+      '</div>';
+  }
+  html += '</div>';
+
+  // Agreement / Disagreement
+  html += '<div class="summary-section-title">⚡ AGREEMENT &amp; DISAGREEMENT</div>';
+  html += '<div class="section-box">';
+  html += '<p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem">Round of 64 picks — sorted by most split matchups first.</p>';
+
+  var r64flat = getR64Flat();
+  var splitData = [];
+  for (var mi = 0; mi < r64flat.length; mi++) {
+    var m = r64flat[mi];
+    var count1 = 0, count2 = 0, p1 = [], p2 = [];
+    for (var pi = 0; pi < 6; pi++) {
+      var pick = picks[pi] && picks[pi]['r64'] ? picks[pi]['r64'][m.id] : null;
+      if (pick === m.t1) { count1++; p1.push(pi); }
+      else if (pick === m.t2) { count2++; p2.push(pi); }
+    }
+    var total = count1 + count2;
+    if (total === 0) continue;
+    splitData.push({ m: m, c1: count1, c2: count2, p1: p1, p2: p2, total: total, diff: Math.abs(count1 - count2) });
+  }
+  splitData.sort(function(a,b){ return a.diff - b.diff; });
+
+  if (splitData.length === 0) {
+    html += '<div style="color:var(--muted);font-size:0.85rem">No Round of 64 picks entered yet.</div>';
+  } else {
+    for (var si = 0; si < splitData.length; si++) {
+      var d = splitData[si];
+      var pct1 = Math.round(d.c1 / d.total * 100);
+      var pct2 = 100 - pct1;
+      var isSplit = d.c1 > 0 && d.c2 > 0;
+      html += '<div class="agree-card' + (isSplit ? ' split' : '') + '">';
+      html += '<div class="agree-matchup"><span class="agree-match-title">' + d.m.t1 + ' <span style="color:var(--muted);font-weight:400">vs</span> ' + d.m.t2 + '</span><span class="agree-region">' + d.m.region + '</span></div>';
+
+      // Team 1
+      html += '<div class="bar-row">';
+      html += '<div class="bar-label"><span class="bar-label-name">' + d.m.t1 + '</span><span class="bar-label-count">' + d.c1 + '/' + d.total + '</span></div>';
+      html += '<div class="agree-bar"><div class="agree-bar-fill" style="width:' + pct1 + '%;background:' + COLORS[0] + '"></div></div>';
+      if (d.p1.length > 0) {
+        html += '<div class="picker-pills">';
+        for (var pi = 0; pi < d.p1.length; pi++) {
+          var idx2 = d.p1[pi];
+          html += '<span class="picker-pill" style="background:' + COLORS[idx2] + '">' + (players[idx2] || DEFAULT_NAMES[idx2]) + '</span>';
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+
+      // Team 2
+      html += '<div class="bar-row" style="margin-top:0.6rem">';
+      html += '<div class="bar-label"><span class="bar-label-name">' + d.m.t2 + '</span><span class="bar-label-count">' + d.c2 + '/' + d.total + '</span></div>';
+      html += '<div class="agree-bar"><div class="agree-bar-fill" style="width:' + pct2 + '%;background:' + COLORS[2] + '"></div></div>';
+      if (d.p2.length > 0) {
+        html += '<div class="picker-pills">';
+        for (var pi = 0; pi < d.p2.length; pi++) {
+          var idx2 = d.p2[pi];
+          html += '<span class="picker-pill" style="background:' + COLORS[idx2] + '">' + (players[idx2] || DEFAULT_NAMES[idx2]) + '</span>';
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+
+      if (isSplit) html += '<div class="split-badge">⚡ SPLIT PICK</div>';
+      html += '</div>';
+    }
+  }
+  html += '</div>';
+
+  // Completion tracker
+  html += '<div class="summary-section-title">📋 PICKS COMPLETED</div>';
+  html += '<div class="section-box"><div class="completion-grid">';
+  for (var i = 0; i < 6; i++) {
+    var made = 0;
+    for (var ri = 0; ri < ROUND_KEYS.length; ri++) {
+      made += Object.keys((picks[i] && picks[i][ROUND_KEYS[ri]]) || {}).length;
+    }
+    var pct = Math.round(made / 63 * 100);
+    html += '<div class="completion-card">' +
+      '<div class="completion-name"><span style="width:10px;height:10px;border-radius:50%;background:' + COLORS[i] + ';display:inline-block;flex-shrink:0"></span>' + (players[i] || DEFAULT_NAMES[i]) + '</div>' +
+      '<div class="completion-count">' + made + ' / 63 picks</div>' +
+      '<div class="completion-bar"><div class="completion-bar-fill" style="width:' + pct + '%;background:' + COLORS[i] + '"></div></div>' +
+      '</div>';
+  }
+  html += '</div></div>';
+
+  el.innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+renderSetup();
+showPage('setup');
+</script>
+</body>
+</html>
