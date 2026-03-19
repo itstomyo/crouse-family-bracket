@@ -7,22 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0d0f14;
-  --surface: #161920;
-  --surface2: #1e222c;
-  --border: #2a2f3d;
-  --accent: #f97316;
-  --accent2: #fbbf24;
-  --green: #22c55e;
-  --text: #e8eaf0;
-  --muted: #6b7280;
+  --bg: #f4f6f4;
+  --surface: #ffffff;
+  --surface2: #edf1ed;
+  --border: #cfd9cf;
+  --green: #2d6a4f;
+  --green-light: #52b788;
+  --green-pale: #d8f3dc;
+  --green-dark: #1b4332;
+  --text: #1a2e1a;
+  --muted: #6b8f71;
+  --gold: #b7881a;
+  --silver: #7a8c8a;
+  --bronze: #8b5e3c;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
+/* ── HEADER ── */
 header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: var(--green-dark);
   padding: 0 2rem;
   display: flex;
   align-items: center;
@@ -30,209 +34,199 @@ header {
   height: 60px;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 200;
   gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
-.logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px; color: var(--accent); white-space: nowrap; }
-.logo span { color: var(--text); }
-.sync-badge {
-  font-size: 0.72rem;
-  font-family: 'DM Mono', monospace;
-  padding: 0.25rem 0.6rem;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-.sync-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--muted);
-  flex-shrink: 0;
-}
-.sync-dot.live { background: var(--green); box-shadow: 0 0 6px var(--green); }
-.sync-dot.saving { background: var(--accent2); }
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.45rem; letter-spacing: 2px; color: #fff; white-space: nowrap; }
+.logo span { color: var(--green-light); }
+.sync-badge { font-size: 0.68rem; font-family: 'DM Mono', monospace; padding: 0.18rem 0.5rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.65); display: flex; align-items: center; gap: 0.35rem; }
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.3); flex-shrink: 0; }
+.sync-dot.live { background: #74c69d; box-shadow: 0 0 5px #74c69d; }
+.sync-dot.saving { background: #ffd166; }
 .sync-dot.error { background: #ef4444; }
+nav { display: flex; gap: 0.15rem; background: rgba(255,255,255,0.1); padding: 0.18rem; border-radius: 8px; }
+nav button { font-family: 'DM Sans', sans-serif; font-size: 0.77rem; font-weight: 600; padding: 0.36rem 0.72rem; border: none; border-radius: 6px; cursor: pointer; background: transparent; color: rgba(255,255,255,0.55); transition: all 0.15s; white-space: nowrap; }
+nav button.active { background: #fff; color: var(--green-dark); }
+nav button:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.15); }
 
-nav { display: flex; gap: 0.25rem; background: var(--surface2); padding: 0.25rem; border-radius: 8px; }
-nav button {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.4rem 0.85rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background: transparent;
-  color: var(--muted);
-  transition: all 0.15s;
-}
-nav button.active { background: var(--accent); color: #fff; }
-nav button:hover:not(.active) { color: var(--text); background: var(--border); }
-
-.page { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+/* ── PAGES ── */
+.page { display: none; padding: 1.75rem 2rem; max-width: 1500px; margin: 0 auto; }
 .page.active { display: block; }
+.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; letter-spacing: 3px; color: var(--green-dark); margin-bottom: 0.25rem; }
+.page-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
 
-/* SETUP */
-.setup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-.player-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
-.player-card label { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
-.player-card input[type="text"] {
+/* ── REGION HEADER ── */
+.region-header { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 3px; margin: 1.75rem 0 0.75rem; color: var(--green-dark); display: flex; align-items: center; gap: 0.75rem; }
+.region-header::after { content: ''; flex: 1; height: 2px; background: var(--green-pale); border-radius: 1px; }
+
+/* ── ROUND TABS ── */
+.round-tabs { display: flex; gap: 0.22rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.round-tab { font-size: 0.72rem; font-weight: 600; padding: 0.3rem 0.72rem; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: var(--surface); color: var(--muted); transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.round-tab.active { background: var(--green); color: #fff; border-color: var(--green); }
+.round-tab:hover:not(.active) { border-color: var(--green); color: var(--green); }
+
+/* ══════════════════════════════════════
+   SIDE-BY-SIDE BRACKET VIEW (HOME PAGE)
+══════════════════════════════════════ */
+.bracket-table-wrap { overflow-x: auto; }
+.bracket-table {
   width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.6rem 0.75rem;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.15s;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  min-width: 700px;
 }
-.player-card input:focus { border-color: var(--accent); }
-.btn-primary {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.1rem;
-  letter-spacing: 2px;
-  padding: 0.75rem 2rem;
-  background: var(--accent);
+.bracket-table th {
+  padding: 0.5rem 0.6rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: opacity 0.15s;
+  background: var(--green);
+  border: 1px solid var(--green-dark);
+  text-align: left;
+  white-space: nowrap;
 }
-.btn-primary:hover { opacity: 0.85; }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* PICKS */
-.picks-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-.picks-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 2px; }
-.player-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
-.player-tab {
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.45rem 1rem;
-  border-radius: 20px;
+.bracket-table th.matchup-col { background: var(--green-dark); min-width: 180px; }
+.bracket-table th.player-col { min-width: 90px; text-align: center; }
+.bracket-table td {
+  padding: 0.42rem 0.6rem;
   border: 1px solid var(--border);
-  cursor: pointer;
-  background: var(--surface);
-  color: var(--muted);
-  transition: all 0.15s;
-  user-select: none;
+  vertical-align: middle;
 }
+.bracket-table tr:hover td { background: #f0f5f0; }
+.bracket-table tr.region-row td { background: var(--green-pale); font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; color: var(--green-dark); padding: 0.4rem 0.6rem; border-top: 2px solid var(--green); }
+.matchup-cell { display: flex; align-items: center; gap: 0.5rem; }
+.matchup-seeds { display: flex; flex-direction: column; gap: 0; }
+.ms { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); width: 16px; text-align: center; line-height: 1.6; }
+.matchup-teams { display: flex; flex-direction: column; gap: 0.1rem; }
+.mt { font-size: 0.8rem; font-weight: 500; line-height: 1.3; }
+.mt.actual-winner { color: var(--green-dark); font-weight: 700; }
+.mt.actual-loser { color: var(--muted); text-decoration: line-through; }
+.vs-dot { font-size: 0.6rem; color: var(--muted); text-align: center; line-height: 1; }
+
+/* Player pick cell */
+.pick-cell { text-align: center; font-size: 0.78rem; font-weight: 600; padding: 0.42rem 0.4rem; }
+.pick-cell.correct { background: #d8f3dc; color: var(--green-dark); }
+.pick-cell.wrong { background: #fff0f0; color: #c0392b; }
+.pick-cell.pending { color: var(--muted); font-style: italic; font-weight: 400; font-size: 0.72rem; }
+.pick-cell.no-pick { color: #ccc; }
+.pick-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; vertical-align: middle; flex-shrink: 0; }
+
+/* Legend */
+.legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: var(--muted); }
+.legend-box { width: 14px; height: 14px; border-radius: 3px; }
+
+/* ══════════════════════════════════════
+   PICKS ENTRY PAGE
+══════════════════════════════════════ */
+.picks-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; }
+.picks-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; letter-spacing: 2px; color: var(--green-dark); }
+.player-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.player-tab { font-size: 0.77rem; font-weight: 600; padding: 0.4rem 0.9rem; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; background: var(--surface); color: var(--muted); transition: all 0.15s; user-select: none; }
 .player-tab.active { color: #fff; border-color: transparent; }
-.round-tabs { display: flex; gap: 0.25rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-.round-tab {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.35rem 0.8rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  background: transparent;
-  color: var(--muted);
-  transition: all 0.15s;
-  font-family: 'DM Sans', sans-serif;
-}
-.round-tab.active { background: var(--surface2); color: var(--text); border-color: var(--accent); }
-.round-tab:hover:not(.active) { color: var(--text); }
-
-.region-header {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.25rem;
-  letter-spacing: 3px;
-  margin: 1.5rem 0 0.75rem;
-  color: var(--accent2);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-.region-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.matchup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem; }
-.matchup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-.matchup-card-header { padding: 0.45rem 0.75rem; background: var(--surface2); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
-.team-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.65rem 0.75rem;
-  cursor: pointer;
-  transition: background 0.1s;
-  border: 2px solid transparent;
-}
+.matchup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(275px, 1fr)); gap: 0.65rem; }
+.matchup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.matchup-card-header { padding: 0.35rem 0.7rem; background: var(--surface2); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+.team-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.7rem; cursor: pointer; transition: background 0.1s; border: 2px solid transparent; }
 .team-row + .team-row { border-top: 1px solid var(--border); }
 .team-row:hover:not(.locked) { background: var(--surface2); }
-.team-row.selected { background: rgba(249,115,22,0.12); border-color: var(--accent); }
-.team-row.locked { opacity: 0.4; cursor: not-allowed; }
-.seed { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); width: 16px; text-align: center; flex-shrink: 0; }
-.team-name { flex: 1; font-size: 0.88rem; font-weight: 500; }
-.pick-check { font-size: 0.8rem; color: var(--accent); font-weight: 700; opacity: 0; transition: opacity 0.1s; }
+.team-row.selected { background: var(--green-pale); border-color: var(--green); }
+.team-row.locked { opacity: 0.38; cursor: not-allowed; }
+.team-row.actual-winner-row { background: #d8f3dc; }
+.team-row.actual-loser-row { opacity: 0.38; }
+.seed { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); width: 15px; text-align: center; flex-shrink: 0; }
+.team-name { flex: 1; font-size: 0.85rem; font-weight: 500; }
+.pick-check { font-size: 0.78rem; color: var(--green); font-weight: 700; opacity: 0; transition: opacity 0.1s; }
 .team-row.selected .pick-check { opacity: 1; }
-
-.progress-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 0.35rem; font-family: 'DM Mono', monospace; }
-.progress-bar-outer { width: 160px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-.progress-bar-inner { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
-
-.empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.9rem; }
+.progress-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.3rem; font-family: 'DM Mono', monospace; }
+.progress-bar-outer { width: 155px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-bar-inner { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.3s; }
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
 .empty-state .big { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--border); letter-spacing: 3px; display: block; margin-bottom: 0.5rem; }
 
-/* SUMMARY */
-.summary-section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 3px; color: var(--accent2); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
-.section-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.75rem; }
-.champ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 0.75rem; margin-bottom: 1.75rem; }
-.champ-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
-.champ-player { font-size: 0.68rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
-.champ-team { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px; color: var(--accent2); }
-.champ-no-pick { color: var(--muted); font-size: 0.8rem; font-style: italic; }
-.agree-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
-.agree-card.split { border-color: var(--accent); }
-.agree-matchup { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-.agree-match-title { font-size: 0.9rem; font-weight: 600; }
-.agree-region { font-size: 0.7rem; color: var(--muted); }
-.bar-row { margin-bottom: 0.6rem; }
-.bar-label { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.3rem; }
+/* ══════════════════════════════════════
+   SCORING PAGE
+══════════════════════════════════════ */
+.info-banner { background: var(--green-pale); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.8rem; color: var(--green-dark); margin-bottom: 1.4rem; }
+
+/* ══════════════════════════════════════
+   SUMMARY PAGE
+══════════════════════════════════════ */
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: 3px; color: var(--green-dark); margin-bottom: 0.85rem; padding-bottom: 0.45rem; border-bottom: 2px solid var(--green-pale); }
+.section-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.6rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+
+/* Leaderboard */
+.leaderboard { display: flex; flex-direction: column; gap: 0.45rem; }
+.lb-row { display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem 1rem; background: var(--surface2); border-radius: 10px; border: 1px solid var(--border); }
+.lb-row.rank-1 { background: #fffbeb; border-color: var(--gold); }
+.lb-row.rank-2 { background: #f8f8f8; border-color: #c0c0c0; }
+.lb-row.rank-3 { background: #fdf3ec; border-color: #cd7f32; }
+.lb-medal { font-size: 1.4rem; width: 30px; text-align: center; flex-shrink: 0; }
+.lb-rank-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; width: 30px; text-align: center; flex-shrink: 0; color: var(--muted); }
+.lb-name { font-weight: 600; font-size: 0.93rem; }
+.lb-champ { font-size: 0.72rem; color: var(--muted); font-style: italic; }
+.lb-breakdown { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 0.12rem; }
+.lb-score { font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; color: var(--green-dark); letter-spacing: 1px; line-height: 1; }
+.lb-score-label { font-size: 0.68rem; color: var(--muted); }
+.point-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.point-chip { font-size: 0.7rem; font-weight: 600; padding: 0.18rem 0.55rem; border-radius: 20px; background: var(--green-pale); color: var(--green-dark); }
+
+/* Champion grid */
+.champ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.7rem; margin-bottom: 1.6rem; }
+.champ-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.champ-player { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
+.champ-team { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: 2px; color: var(--green-dark); }
+.champ-no-pick { color: var(--muted); font-size: 0.78rem; font-style: italic; }
+
+/* Agreement cards */
+.agree-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1.1rem; margin-bottom: 0.65rem; }
+.agree-card.split { border-left: 3px solid var(--green); }
+.agree-card.unanimous { border-left: 3px solid var(--border); }
+.agree-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.65rem; gap: 0.5rem; }
+.agree-match-title { font-size: 0.88rem; font-weight: 600; flex: 1; }
+.agree-region-badge { font-size: 0.65rem; background: var(--green-pale); color: var(--green-dark); padding: 0.12rem 0.45rem; border-radius: 10px; font-weight: 700; white-space: nowrap; }
+.bar-row { margin-bottom: 0.5rem; }
+.bar-row:last-of-type { margin-bottom: 0; }
+.bar-label { display: flex; justify-content: space-between; font-size: 0.73rem; margin-bottom: 0.25rem; }
 .bar-label-name { font-weight: 600; }
 .bar-label-count { color: var(--muted); font-family: 'DM Mono', monospace; }
-.agree-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 0.35rem; }
+.agree-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 0.3rem; }
 .agree-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
-.picker-pills { display: flex; flex-wrap: wrap; gap: 0.3rem; }
-.picker-pill { font-size: 0.7rem; font-weight: 600; padding: 0.18rem 0.55rem; border-radius: 20px; color: #fff; }
-.split-badge { display: inline-block; font-size: 0.68rem; font-weight: 700; color: var(--accent); margin-top: 0.5rem; }
-.completion-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.75rem; }
-.completion-card { background: var(--surface2); border-radius: 8px; padding: 0.85rem; }
-.completion-name { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; }
-.completion-count { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.4rem; }
-.completion-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-.completion-bar-fill { height: 100%; border-radius: 2px; }
+.picker-pills { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.picker-pill { font-size: 0.68rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 20px; color: #fff; }
+.split-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; color: var(--green-dark); margin-top: 0.45rem; background: var(--green-pale); padding: 0.12rem 0.45rem; border-radius: 10px; }
 
-/* LOADING OVERLAY */
-#loadingOverlay {
-  position: fixed; inset: 0;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  gap: 1rem;
-}
-.spinner {
-  width: 36px; height: 36px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
+/* Completion */
+.completion-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 0.65rem; }
+.completion-card { background: var(--surface2); border-radius: 8px; padding: 0.8rem; border: 1px solid var(--border); }
+.completion-name { display: flex; align-items: center; gap: 0.45rem; font-weight: 600; font-size: 0.88rem; margin-bottom: 0.45rem; }
+.completion-count { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.35rem; }
+.completion-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.completion-bar-fill { height: 100%; border-radius: 3px; }
+
+/* SETUP */
+.setup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.9rem; margin-bottom: 1.75rem; }
+.player-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.player-card label { display: block; font-size: 0.67rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+.player-card input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 0.72rem; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.92rem; outline: none; transition: border-color 0.15s; }
+.player-card input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(45,106,79,0.1); }
+.btn-primary { font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 2px; padding: 0.7rem 1.9rem; background: var(--green); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+.btn-primary:hover { background: var(--green-dark); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* LOADING */
+#loadingOverlay { position: fixed; inset: 0; background: var(--green-dark); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; gap: 1rem; }
+.spinner { width: 34px; height: 34px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 3px; color: var(--muted); }
+.loading-text { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 3px; color: rgba(255,255,255,0.7); }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .page { padding: 1rem; }
   header { padding: 0 1rem; }
-  .logo { font-size: 1.2rem; }
+  .logo { font-size: 1.15rem; }
 }
 </style>
 </head>
@@ -245,30 +239,44 @@ nav button:hover:not(.active) { color: var(--text); background: var(--border); }
 
 <header>
   <div class="logo">CROUSE FAMILY <span>BRACKETS</span></div>
-  <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
-    <div class="sync-badge">
-      <div class="sync-dot" id="syncDot"></div>
-      <span id="syncLabel">Connecting…</span>
-    </div>
+  <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+    <div class="sync-badge"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Connecting…</span></div>
     <nav>
-      <button onclick="showPage('setup')">Setup</button>
-      <button onclick="showPage('picks')">Picks</button>
-      <button onclick="showPage('summary')">Summary</button>
+      <button onclick="showPage('bracket')">🏀 Bracket</button>
+      <button onclick="showPage('summary')">📊 Summary</button>
+      <button onclick="showPage('scoring')">🎯 Scoring</button>
+      <button onclick="showPage('picks')">✏️ Picks</button>
+      <button onclick="showPage('setup')">⚙️ Setup</button>
     </nav>
   </div>
 </header>
 
-<!-- SETUP -->
-<div id="page-setup" class="page">
-  <div style="margin-bottom:2rem">
-    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;margin-bottom:0.4rem">BRACKET SETUP</h1>
-    <p style="color:var(--muted);font-size:0.9rem">Enter the names of all six players. Names are saved to the shared database.</p>
-  </div>
-  <div class="setup-grid" id="setupGrid"></div>
-  <button class="btn-primary" id="saveNamesBtn" onclick="saveNames()">SAVE NAMES &amp; GO TO PICKS →</button>
+<!-- ═══ BRACKET (HOME) ═══ -->
+<div id="page-bracket" class="page active">
+  <div class="page-title">BRACKET VIEW</div>
+  <div class="page-sub">All six picks side by side for every matchup. Green = correct pick, red = wrong.</div>
+  <div class="legend" id="bracketLegend"></div>
+  <div class="round-tabs" id="bracketRoundTabs"></div>
+  <div id="bracketContent"></div>
 </div>
 
-<!-- PICKS -->
+<!-- ═══ SUMMARY ═══ -->
+<div id="page-summary" class="page">
+  <div class="page-title">SUMMARY</div>
+  <div class="page-sub">Leaderboard, champion picks, and where the family agrees or disagrees.</div>
+  <div id="summaryContent"></div>
+</div>
+
+<!-- ═══ SCORING ═══ -->
+<div id="page-scoring" class="page">
+  <div class="page-title">LIVE SCORING</div>
+  <div class="page-sub">Mark actual winners. Scores = Round Points + Seed of winner for every correct pick.</div>
+  <div class="info-banner">🏆 Scoring: <strong>Points + Seed</strong> for each correct pick. Example: picking a correct 12-seed upset in R64 = 1 + 12 = <strong>13 pts</strong>. Click a team to mark them as the winner. Click again to undo.</div>
+  <div class="round-tabs" id="scoringRoundTabs"></div>
+  <div id="scoringArea"></div>
+</div>
+
+<!-- ═══ PICKS ═══ -->
 <div id="page-picks" class="page">
   <div class="picks-header">
     <div class="picks-title">ENTER PICKS</div>
@@ -282,29 +290,25 @@ nav button:hover:not(.active) { color: var(--text); background: var(--border); }
   <div id="matchupArea"></div>
 </div>
 
-<!-- SUMMARY -->
-<div id="page-summary" class="page">
-  <div style="margin-bottom:1.5rem">
-    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;margin-bottom:0.4rem">BRACKET SUMMARY</h1>
-    <p style="color:var(--muted);font-size:0.9rem">Live view of all picks, agreements, and champion selections.</p>
-  </div>
-  <div id="summaryContent"></div>
+<!-- ═══ SETUP ═══ -->
+<div id="page-setup" class="page">
+  <div class="page-title">SETUP</div>
+  <div class="page-sub">Enter player names. Saved automatically to the shared database.</div>
+  <div class="setup-grid" id="setupGrid"></div>
+  <button class="btn-primary" id="saveNamesBtn" onclick="saveNames()">SAVE &amp; GO TO PICKS →</button>
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-// ── Firebase config ──
 const firebaseConfig = {
   apiKey: "AIzaSyD5nzz37swYCq6ehpqRSh-UZThdXtVjxKc",
   authDomain: "crouse-family-brackets.firebaseapp.com",
   projectId: "crouse-family-brackets",
   storageBucket: "crouse-family-brackets.firebasestorage.app",
   messagingSenderId: "597131731205",
-  appId: "1:597131731205:web:acd8a9e1def33e83be176c",
-  measurementId: "G-SMMKJ967ZG"
+  appId: "1:597131731205:web:acd8a9e1def33e83be176c"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -312,436 +316,510 @@ const db = getFirestore(app);
 const DOC_REF = doc(db, 'brackets', 'crouse2026');
 
 // ── Constants ──
-const COLORS = ['#f97316','#3b82f6','#22c55e','#a855f7','#ec4899','#14b8a6'];
+const COLORS = ['#2d6a4f','#1e6091','#9b2335','#6a4c93','#b5620a','#1a5276'];
 const DEFAULT_NAMES = ['Player 1','Player 2','Player 3','Player 4','Player 5','Player 6'];
-const REGIONS = ['East','South','Midwest','West'];
+const REGIONS = ['East','South','West','Midwest'];
 const ROUND_KEYS = ['r64','r32','s16','e8','ff','champ'];
 const ROUND_LABELS = {r64:'Round of 64',r32:'Round of 32',s16:'Sweet 16',e8:'Elite 8',ff:'Final Four',champ:'Championship'};
-const ROUND_SIZES = {r64:32,r32:16,s16:8,e8:4,ff:2,champ:1};
+const ROUND_POINTS = {r64:1,r32:2,s16:4,e8:8,ff:16,champ:32};
 
-// First Four results (played March 17-18):
-// (16) Prairie View A&M def. Lehigh  → plays Florida
-// (11) Texas def. NC State           → plays North Carolina
-// (11) Miami (OH) def. SMU           → plays Saint Mary's slot (East 11)
-// (16) Howard def. UNBC              → plays Michigan
 const R64 = {
   East: [
-    {id:'E1',s1:1, t1:'Duke',          s2:16,t2:'Siena'},
-    {id:'E2',s1:8, t1:'Ohio State',    s2:9, t2:'TCU'},
-    {id:'E3',s1:5, t1:"St. John's",    s2:12,t2:'Northern Iowa'},
-    {id:'E4',s1:4, t1:'Kansas',        s2:13,t2:'Cal Baptist'},
-    {id:'E5',s1:6, t1:'Louisville',    s2:11,t2:'South Florida'},
-    {id:'E6',s1:3, t1:'Michigan State',s2:14,t2:'N. Dakota State'},
-    {id:'E7',s1:7, t1:'UCLA',          s2:10,t2:'UCF'},
-    {id:'E8',s1:2, t1:'UConn',         s2:15,t2:'Furman'},
+    {id:'E1',s1:1, t1:'Duke',           s2:16,t2:'Siena'},
+    {id:'E2',s1:8, t1:'Ohio State',     s2:9, t2:'TCU'},
+    {id:'E3',s1:5, t1:"St. John's",     s2:12,t2:'Northern Iowa'},
+    {id:'E4',s1:4, t1:'Kansas',         s2:13,t2:'Cal Baptist'},
+    {id:'E5',s1:6, t1:'Louisville',     s2:11,t2:'South Florida'},
+    {id:'E6',s1:3, t1:'Michigan State', s2:14,t2:'N. Dakota State'},
+    {id:'E7',s1:7, t1:'UCLA',           s2:10,t2:'UCF'},
+    {id:'E8',s1:2, t1:'UConn',          s2:15,t2:'Furman'},
   ],
   South: [
-    {id:'S1',s1:1, t1:'Florida',       s2:16,t2:'Prairie View A&M'},
-    {id:'S2',s1:8, t1:'Clemson',       s2:9, t2:'Iowa'},
-    {id:'S3',s1:5, t1:'Vanderbilt',    s2:12,t2:'McNeese'},
-    {id:'S4',s1:4, t1:'Nebraska',      s2:13,t2:'Troy'},
-    {id:'S5',s1:6, t1:'North Carolina',s2:11,t2:'VCU'},
-    {id:'S6',s1:3, t1:'Illinois',      s2:14,t2:'Penn'},
-    {id:'S7',s1:7, t1:"Saint Mary's",  s2:11,t2:'Miami (OH)'},
-    {id:'S8',s1:2, t1:'Houston',       s2:15,t2:'Idaho'},
-  ],
-  Midwest: [
-    {id:'M1',s1:1, t1:'Arizona',       s2:16,t2:'LIU'},
-    {id:'M2',s1:8, t1:'Villanova',     s2:9, t2:'Utah State'},
-    {id:'M3',s1:5, t1:'Wisconsin',     s2:12,t2:'High Point'},
-    {id:'M4',s1:4, t1:'Arkansas',      s2:13,t2:'Hawaii'},
-    {id:'M5',s1:6, t1:'BYU',           s2:11,t2:'Texas'},
-    {id:'M6',s1:3, t1:'Gonzaga',       s2:14,t2:'Kennesaw State'},
-    {id:'M7',s1:7, t1:'Miami (FL)',    s2:10,t2:'Missouri'},
-    {id:'M8',s1:2, t1:'Purdue',        s2:15,t2:'Queens'},
+    {id:'S1',s1:1, t1:'Florida',        s2:16,t2:'Prairie View A&M'},
+    {id:'S2',s1:8, t1:'Clemson',        s2:9, t2:'Iowa'},
+    {id:'S3',s1:5, t1:'Vanderbilt',     s2:12,t2:'McNeese'},
+    {id:'S4',s1:4, t1:'Nebraska',       s2:13,t2:'Troy'},
+    {id:'S5',s1:6, t1:'North Carolina', s2:11,t2:'VCU'},
+    {id:'S6',s1:3, t1:'Illinois',       s2:14,t2:'Penn'},
+    {id:'S7',s1:7, t1:"Saint Mary's",   s2:11,t2:'Miami (OH)'},
+    {id:'S8',s1:2, t1:'Houston',        s2:15,t2:'Idaho'},
   ],
   West: [
-    {id:'W1',s1:1, t1:'Michigan',      s2:16,t2:'Howard'},
-    {id:'W2',s1:8, t1:'Georgia',       s2:9, t2:'Saint Louis'},
-    {id:'W3',s1:5, t1:'Texas Tech',    s2:12,t2:'Akron'},
-    {id:'W4',s1:4, t1:'Alabama',       s2:13,t2:'Hofstra'},
-    {id:'W5',s1:6, t1:'Tennessee',     s2:11,t2:'NC State'},
-    {id:'W6',s1:3, t1:'Virginia',      s2:14,t2:'Wright State'},
-    {id:'W7',s1:7, t1:'Kentucky',      s2:10,t2:'Santa Clara'},
-    {id:'W8',s1:2, t1:'Iowa State',    s2:15,t2:'Tennessee State'},
+    {id:'W1',s1:1, t1:'Arizona',        s2:16,t2:'LIU'},
+    {id:'W2',s1:8, t1:'Villanova',      s2:9, t2:'Utah State'},
+    {id:'W3',s1:5, t1:'Wisconsin',      s2:12,t2:'High Point'},
+    {id:'W4',s1:4, t1:'Arkansas',       s2:13,t2:'Hawaii'},
+    {id:'W5',s1:6, t1:'BYU',            s2:11,t2:'Texas'},
+    {id:'W6',s1:3, t1:'Gonzaga',        s2:14,t2:'Kennesaw State'},
+    {id:'W7',s1:7, t1:'Miami (FL)',     s2:10,t2:'Missouri'},
+    {id:'W8',s1:2, t1:'Purdue',         s2:15,t2:'Queens'},
+  ],
+  Midwest: [
+    {id:'M1',s1:1, t1:'Michigan',       s2:16,t2:'Howard'},
+    {id:'M2',s1:8, t1:'Georgia',        s2:9, t2:'Saint Louis'},
+    {id:'M3',s1:5, t1:'Texas Tech',     s2:12,t2:'Akron'},
+    {id:'M4',s1:4, t1:'Alabama',        s2:13,t2:'Hofstra'},
+    {id:'M5',s1:6, t1:'Tennessee',      s2:11,t2:'NC State'},
+    {id:'M6',s1:3, t1:'Virginia',       s2:14,t2:'Wright State'},
+    {id:'M7',s1:7, t1:'Kentucky',       s2:10,t2:'Santa Clara'},
+    {id:'M8',s1:2, t1:'Iowa State',     s2:15,t2:'Tennessee State'},
   ],
 };
 
 // ── State ──
-let players = ['','','','','',''];
-let picks = {};
-let currentPlayer = 0;
-let currentRound = 'r64';
-let saveTimeout = null;
+var players = ['','','','','',''];
+var picks = {};
+var results = {};
+var currentPlayer = 0;
+var currentRound = 'r64';
+var currentBracketRound = 'r64';
+var currentScoringRound = 'r64';
+var saveTimeout = null;
 
 function initPicks() {
   for (var p = 0; p < 6; p++) {
     if (!picks[p]) picks[p] = {};
-    for (var i = 0; i < ROUND_KEYS.length; i++) {
-      if (!picks[p][ROUND_KEYS[i]]) picks[p][ROUND_KEYS[i]] = {};
-    }
+    for (var i = 0; i < ROUND_KEYS.length; i++) if (!picks[p][ROUND_KEYS[i]]) picks[p][ROUND_KEYS[i]] = {};
   }
 }
 initPicks();
 
-// ── Sync status ──
-function setSyncStatus(state, label) {
-  var dot = document.getElementById('syncDot');
-  var lbl = document.getElementById('syncLabel');
-  dot.className = 'sync-dot ' + state;
-  lbl.textContent = label;
-}
+function setSyncStatus(s,l) { document.getElementById('syncDot').className='sync-dot '+s; document.getElementById('syncLabel').textContent=l; }
 
-// ── Load from Firebase ──
-async function loadData() {
-  try {
-    var snap = await getDoc(DOC_REF);
-    if (snap.exists()) {
-      var data = snap.data();
-      if (data.players) players = data.players;
-      if (data.picks) {
-        picks = {};
-        for (var p = 0; p < 6; p++) {
-          picks[p] = data.picks[p] || {};
-          for (var i = 0; i < ROUND_KEYS.length; i++) {
-            if (!picks[p][ROUND_KEYS[i]]) picks[p][ROUND_KEYS[i]] = {};
-          }
-        }
-      }
-    }
-    setSyncStatus('live', 'Live');
-  } catch(e) {
-    setSyncStatus('error', 'Offline');
-    console.error(e);
-  }
-  document.getElementById('loadingOverlay').style.display = 'none';
-  renderSetup();
-  showPage('setup');
-
-  // Listen for real-time updates
+function loadData() {
   onSnapshot(DOC_REF, function(snap) {
     if (snap.exists()) {
-      var data = snap.data();
-      if (data.players) players = data.players;
-      if (data.picks) {
-        picks = {};
-        for (var p = 0; p < 6; p++) {
-          picks[p] = data.picks[p] || {};
-          for (var i = 0; i < ROUND_KEYS.length; i++) {
-            if (!picks[p][ROUND_KEYS[i]]) picks[p][ROUND_KEYS[i]] = {};
-          }
-        }
-      }
-      // Refresh current view
-      var activePage = document.querySelector('.page.active');
-      if (activePage) {
-        var id = activePage.id;
-        if (id === 'page-picks') { renderPlayerTabs(); renderMatchups(); updateProgress(); }
-        if (id === 'page-summary') renderSummary();
-        if (id === 'page-setup') renderSetup();
-      }
+      var d = snap.data();
+      if (d.players) players = d.players;
+      if (d.picks) { picks={}; for(var p=0;p<6;p++){picks[p]=d.picks[p]||{};for(var i=0;i<ROUND_KEYS.length;i++)if(!picks[p][ROUND_KEYS[i]])picks[p][ROUND_KEYS[i]]={};} }
+      results = d.results || {};
+      refreshPage();
     }
-    setSyncStatus('live', 'Live');
+    setSyncStatus('live','Live');
+    document.getElementById('loadingOverlay').style.display='none';
+    renderSetup();
+  }, function(e) {
+    setSyncStatus('error','Offline');
+    document.getElementById('loadingOverlay').style.display='none';
+    renderSetup();
   });
 }
 
-// ── Save to Firebase (debounced) ──
+function refreshPage() {
+  var a = document.querySelector('.page.active');
+  if (!a) return;
+  var id = a.id;
+  if (id==='page-bracket') renderBracket();
+  else if (id==='page-summary') renderSummary();
+  else if (id==='page-scoring') renderScoringMatchups();
+  else if (id==='page-picks') { renderPlayerTabs(); renderMatchups(); updateProgress(); }
+  else if (id==='page-setup') renderSetup();
+}
+
 function scheduleSave() {
-  setSyncStatus('saving', 'Saving…');
+  setSyncStatus('saving','Saving…');
   if (saveTimeout) clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(function() { saveData(); }, 800);
+  saveTimeout = setTimeout(saveData, 700);
 }
 
 async function saveData() {
   try {
-    var picksPlain = {};
-    for (var p = 0; p < 6; p++) picksPlain[p] = picks[p] || {};
-    await setDoc(DOC_REF, { players: players, picks: picksPlain });
-    setSyncStatus('live', 'Saved ✓');
-    setTimeout(function(){ setSyncStatus('live','Live'); }, 2000);
-  } catch(e) {
-    setSyncStatus('error', 'Save failed');
-    console.error(e);
-  }
+    var pp={};
+    for(var p=0;p<6;p++) pp[p]=picks[p]||{};
+    await setDoc(DOC_REF,{players:players,picks:pp,results:results});
+    setSyncStatus('live','Saved ✓');
+    setTimeout(function(){setSyncStatus('live','Live');},2000);
+  } catch(e){setSyncStatus('error','Save failed');}
 }
 
 // ── Navigation ──
 window.showPage = function(name) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('nav button').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('nav button')[['setup','picks','summary'].indexOf(name)].classList.add('active');
-  if (name === 'picks') renderPicksPage();
-  if (name === 'summary') renderSummary();
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('nav button').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  var pages=['bracket','summary','scoring','picks','setup'];
+  document.querySelectorAll('nav button')[pages.indexOf(name)].classList.add('active');
+  if (name==='bracket') renderBracket();
+  else if (name==='summary') renderSummary();
+  else if (name==='scoring') renderScoringPage();
+  else if (name==='picks') renderPicksPage();
 };
 
 // ── Setup ──
 function renderSetup() {
-  var g = document.getElementById('setupGrid');
-  var html = '';
-  for (var i = 0; i < 6; i++) {
-    html += '<div class="player-card">' +
-      '<label><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + COLORS[i] + ';margin-right:6px;vertical-align:middle"></span>Player ' + (i+1) + '</label>' +
-      '<input type="text" id="pname' + i + '" placeholder="Enter name…" value="' + (players[i] || '') + '" maxlength="20">' +
-      '</div>';
-  }
-  g.innerHTML = html;
+  var g=document.getElementById('setupGrid'),html='';
+  for(var i=0;i<6;i++) html+='<div class="player-card"><label><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+COLORS[i]+';margin-right:5px;vertical-align:middle"></span>Player '+(i+1)+'</label><input type="text" id="pname'+i+'" placeholder="Enter name…" value="'+(players[i]||'')+'" maxlength="20"></div>';
+  g.innerHTML=html;
 }
-
 window.saveNames = async function() {
-  var btn = document.getElementById('saveNamesBtn');
-  btn.disabled = true;
-  btn.textContent = 'SAVING…';
-  for (var i = 0; i < 6; i++) {
-    var v = document.getElementById('pname' + i).value.trim();
-    players[i] = v || DEFAULT_NAMES[i];
-  }
+  var btn=document.getElementById('saveNamesBtn');
+  btn.disabled=true; btn.textContent='SAVING…';
+  for(var i=0;i<6;i++){var v=document.getElementById('pname'+i).value.trim();players[i]=v||DEFAULT_NAMES[i];}
   await saveData();
-  btn.disabled = false;
-  btn.textContent = 'SAVE NAMES & GO TO PICKS →';
+  btn.disabled=false; btn.textContent='SAVE & GO TO PICKS →';
   showPage('picks');
 };
 
-// ── Picks Page ──
-function renderPicksPage() {
-  renderPlayerTabs();
-  renderRoundTabs();
-  renderMatchups();
-  updateProgress();
-}
-
-function renderPlayerTabs() {
-  var el = document.getElementById('playerTabs');
-  var html = '';
-  for (var i = 0; i < 6; i++) {
-    var name = players[i] || DEFAULT_NAMES[i];
-    var activeStyle = (i === currentPlayer) ? 'background:' + COLORS[i] + ';border-color:' + COLORS[i] + ';color:#fff;' : '';
-    var activeClass = (i === currentPlayer) ? ' active' : '';
-    html += '<div class="player-tab' + activeClass + '" style="' + activeStyle + '" onclick="selectPlayer(' + i + ')">' + name + '</div>';
-  }
-  el.innerHTML = html;
-}
-
-window.selectPlayer = function(i) {
-  currentPlayer = i;
-  renderPlayerTabs();
-  renderMatchups();
-  updateProgress();
-};
-
-function renderRoundTabs() {
-  var el = document.getElementById('roundTabs');
-  var html = '';
-  for (var i = 0; i < ROUND_KEYS.length; i++) {
-    var key = ROUND_KEYS[i];
-    var cls = (key === currentRound) ? ' active' : '';
-    html += '<button class="round-tab' + cls + '" onclick="selectRound(\'' + key + '\')">' + ROUND_LABELS[key] + '</button>';
-  }
-  el.innerHTML = html;
-}
-
-window.selectRound = function(key) {
-  currentRound = key;
-  renderRoundTabs();
-  renderMatchups();
-};
-
+// ── Bracket Data Helpers ──
 function getR64Flat() {
-  var result = [];
-  for (var r = 0; r < REGIONS.length; r++) {
-    var reg = REGIONS[r];
-    var games = R64[reg];
-    for (var g = 0; g < games.length; g++) {
-      result.push(Object.assign({region: reg}, games[g]));
-    }
+  var r=[];
+  for(var i=0;i<REGIONS.length;i++){var reg=REGIONS[i],gs=R64[reg];for(var g=0;g<gs.length;g++)r.push(Object.assign({region:reg},gs[g]));}
+  return r;
+}
+function getMatchupsForRound(rk,pIdx) {
+  if(pIdx===undefined) pIdx=currentPlayer;
+  if(rk==='r64') return getR64Flat();
+  var pk=ROUND_KEYS[ROUND_KEYS.indexOf(rk)-1],prev=getMatchupsForRound(pk,pIdx),res=[];
+  for(var i=0;i<prev.length;i+=2){
+    var a=prev[i],b=prev[i+1];
+    var pA=(picks[pIdx]&&picks[pIdx][pk])?picks[pIdx][pk][a.id]:null;
+    var pB=(picks[pIdx]&&picks[pIdx][pk])?picks[pIdx][pk][b.id]:null;
+    res.push({id:rk+'_m'+(i/2),region:a.region,s1:null,t1:pA||null,s2:null,t2:pB||null,locked1:!pA,locked2:!pB});
   }
-  return result;
+  return res;
+}
+function getScoringMatchups(rk) {
+  if(rk==='r64') return getR64Flat();
+  var pk=ROUND_KEYS[ROUND_KEYS.indexOf(rk)-1],prev=getScoringMatchups(pk),res=[];
+  for(var i=0;i<prev.length;i+=2){
+    var a=prev[i],b=prev[i+1];
+    var rA=results[pk]?results[pk][a.id]:null,rB=results[pk]?results[pk][b.id]:null;
+    res.push({id:rk+'_m'+(i/2),region:a.region,s1:null,t1:rA||null,s2:null,t2:rB||null,locked1:!rA,locked2:!rB});
+  }
+  return res;
 }
 
-function getMatchupsForRound(roundKey, pIdx) {
-  if (pIdx === undefined) pIdx = currentPlayer;
-  if (roundKey === 'r64') return getR64Flat();
-  var prevKey = ROUND_KEYS[ROUND_KEYS.indexOf(roundKey) - 1];
-  var prevMatchups = getMatchupsForRound(prevKey, pIdx);
-  var result = [];
-  for (var i = 0; i < prevMatchups.length; i += 2) {
-    var a = prevMatchups[i];
-    var b = prevMatchups[i + 1];
-    var pickA = (picks[pIdx] && picks[pIdx][prevKey]) ? picks[pIdx][prevKey][a.id] : null;
-    var pickB = (picks[pIdx] && picks[pIdx][prevKey]) ? picks[pIdx][prevKey][b.id] : null;
-    result.push({
-      id: roundKey + '_m' + (i / 2),
-      region: a.region,
-      s1: null, t1: pickA || null,
-      s2: null, t2: pickB || null,
-      locked1: !pickA,
-      locked2: !pickB,
-    });
-  }
-  return result;
+// Get seed of a team from R64 (for scoring bonus)
+function getSeedOfTeam(teamName) {
+  for(var reg in R64){var gs=R64[reg];for(var i=0;i<gs.length;i++){if(gs[i].t1===teamName)return gs[i].s1;if(gs[i].t2===teamName)return gs[i].s2;}}
+  return 1; // default
 }
 
-function renderMatchups() {
-  var area = document.getElementById('matchupArea');
-  var matchups = getMatchupsForRound(currentRound);
-  var html = '';
-  if (currentRound === 'r64') {
-    for (var r = 0; r < REGIONS.length; r++) {
-      var reg = REGIONS[r];
-      var rg = matchups.filter(function(m){ return m.region === reg; });
-      html += '<div class="region-header">' + reg + ' Region</div><div class="matchup-grid">';
-      for (var g = 0; g < rg.length; g++) html += buildCard(rg[g]);
-      html += '</div>';
+// ══════════════════════════════
+//  BRACKET VIEW (HOME PAGE)
+// ══════════════════════════════
+function renderBracket() {
+  renderBracketLegend();
+  renderBracketRoundTabs();
+  renderBracketContent();
+}
+
+function renderBracketLegend() {
+  var el=document.getElementById('bracketLegend');
+  var html='';
+  for(var i=0;i<6;i++){
+    var name=players[i]||DEFAULT_NAMES[i];
+    html+='<div class="legend-item"><span class="pick-dot" style="background:'+COLORS[i]+'"></span>'+name+'</div>';
+  }
+  html+='<div class="legend-item"><div class="legend-box" style="background:#d8f3dc;border:1px solid #ccc"></div>Correct</div>';
+  html+='<div class="legend-item"><div class="legend-box" style="background:#fff0f0;border:1px solid #ccc"></div>Wrong</div>';
+  el.innerHTML=html;
+}
+
+function renderBracketRoundTabs() {
+  var el=document.getElementById('bracketRoundTabs'),html='';
+  for(var i=0;i<ROUND_KEYS.length;i++){
+    var k=ROUND_KEYS[i];
+    html+='<button class="round-tab'+(k===currentBracketRound?' active':'')+'" onclick="selectBracketRound(\''+k+'\')">'+ROUND_LABELS[k]+'</button>';
+  }
+  el.innerHTML=html;
+}
+window.selectBracketRound = function(k){currentBracketRound=k;renderBracketRoundTabs();renderBracketContent();};
+
+function renderBracketContent() {
+  var area=document.getElementById('bracketContent');
+  // Build matchup list for this round (using player 0 as structural reference — matchup IDs are the same for all players)
+  var matchups=getMatchupsForRound(currentBracketRound,0);
+  var rk=currentBracketRound;
+  var result_map=results[rk]||{};
+
+  // Get player names header
+  var playerHeaders='<th class="matchup-col">Matchup</th>';
+  for(var i=0;i<6;i++) playerHeaders+='<th class="player-col"><span class="pick-dot" style="background:'+COLORS[i]+';display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;vertical-align:middle"></span>'+(players[i]||DEFAULT_NAMES[i])+'</th>';
+
+  // Group by region
+  var html='<div class="bracket-table-wrap"><table class="bracket-table"><thead><tr>'+playerHeaders+'</tr></thead><tbody>';
+
+  var doRegions=(currentBracketRound==='r64'||currentBracketRound==='r32'||currentBracketRound==='s16'||currentBracketRound==='e8');
+
+  if(doRegions) {
+    for(var r=0;r<REGIONS.length;r++){
+      var reg=REGIONS[r];
+      var regMatchups=matchups.filter(function(m){return m.region===reg;});
+      if(!regMatchups.length) continue;
+      // Region header row
+      html+='<tr class="region-row"><td colspan="7">'+reg+' Region</td></tr>';
+      for(var g=0;g<regMatchups.length;g++) html+=buildBracketRow(regMatchups[g],rk,result_map);
     }
-  } else if (currentRound === 'ff' || currentRound === 'champ') {
-    html += '<div class="matchup-grid">';
-    for (var i = 0; i < matchups.length; i++) html += buildCard(matchups[i]);
-    html += '</div>';
   } else {
-    for (var r = 0; r < REGIONS.length; r++) {
-      var reg = REGIONS[r];
-      var rg = matchups.filter(function(m){ return m.region === reg; });
-      if (rg.length === 0) continue;
-      html += '<div class="region-header">' + reg + ' Region</div><div class="matchup-grid">';
-      for (var g = 0; g < rg.length; g++) html += buildCard(rg[g]);
-      html += '</div>';
-    }
-    if (!html) html = '<div class="empty-state"><span class="big">NO GAMES YET</span>Complete previous rounds first.</div>';
+    for(var g=0;g<matchups.length;g++) html+=buildBracketRow(matchups[g],rk,result_map);
   }
-  area.innerHTML = html;
-}
 
-function buildCard(m) {
-  var picked = picks[currentPlayer] && picks[currentPlayer][currentRound] ? picks[currentPlayer][currentRound][m.id] : null;
-  var sel1 = (picked && picked === m.t1) ? ' selected' : '';
-  var sel2 = (picked && picked === m.t2) ? ' selected' : '';
-  var lk1 = m.locked1 ? ' locked' : '';
-  var lk2 = m.locked2 ? ' locked' : '';
-  var t1d = m.t1 || '<span style="color:var(--muted);font-style:italic;font-size:0.8rem">Pending pick</span>';
-  var t2d = m.t2 || '<span style="color:var(--muted);font-style:italic;font-size:0.8rem">Pending pick</span>';
-  var seed1 = m.s1 ? '<span class="seed">' + m.s1 + '</span>' : '<span class="seed">—</span>';
-  var seed2 = m.s2 ? '<span class="seed">' + m.s2 + '</span>' : '<span class="seed">—</span>';
-  var t1safe = m.t1 ? m.t1.replace(/\\/g,'\\\\').replace(/'/g,"\\'") : '';
-  var t2safe = m.t2 ? m.t2.replace(/\\/g,'\\\\').replace(/'/g,"\\'") : '';
-  var click1 = (!m.locked1 && m.t1) ? ' onclick="makePick(' + currentPlayer + ',\'' + currentRound + '\',\'' + m.id + '\',\'' + t1safe + '\')"' : '';
-  var click2 = (!m.locked2 && m.t2) ? ' onclick="makePick(' + currentPlayer + ',\'' + currentRound + '\',\'' + m.id + '\',\'' + t2safe + '\')"' : '';
-  var label = m.region ? m.region + ' · ' + m.id : m.id;
-  return '<div class="matchup-card">' +
-    '<div class="matchup-card-header">' + label + '</div>' +
-    '<div>' +
-      '<div class="team-row' + sel1 + lk1 + '"' + click1 + '>' + seed1 + '<span class="team-name">' + t1d + '</span><span class="pick-check">✓</span></div>' +
-      '<div class="team-row' + sel2 + lk2 + '"' + click2 + '>' + seed2 + '<span class="team-name">' + t2d + '</span><span class="pick-check">✓</span></div>' +
-    '</div></div>';
-}
+  html+='</tbody></table></div>';
 
-window.makePick = function(pIdx, roundKey, matchId, teamName) {
-  if (!picks[pIdx]) picks[pIdx] = {};
-  if (!picks[pIdx][roundKey]) picks[pIdx][roundKey] = {};
-  picks[pIdx][roundKey][matchId] = teamName;
-  clearDownstream(pIdx, roundKey, matchId);
-  renderMatchups();
-  updateProgress();
-  scheduleSave();
-};
-
-function clearDownstream(pIdx, roundKey, matchId) {
-  var ri = ROUND_KEYS.indexOf(roundKey);
-  if (ri >= ROUND_KEYS.length - 1) return;
-  var nextRound = ROUND_KEYS[ri + 1];
-  var cur = getMatchupsForRound(roundKey, pIdx);
-  var idx = -1;
-  for (var i = 0; i < cur.length; i++) { if (cur[i].id === matchId) { idx = i; break; } }
-  if (idx < 0) return;
-  var nextIdx = Math.floor(idx / 2);
-  var next = getMatchupsForRound(nextRound, pIdx);
-  if (next[nextIdx]) {
-    if (picks[pIdx][nextRound]) delete picks[pIdx][nextRound][next[nextIdx].id];
-    clearDownstream(pIdx, nextRound, next[nextIdx].id);
-  }
-}
-
-function updateProgress() {
-  var made = 0;
-  for (var i = 0; i < ROUND_KEYS.length; i++) {
-    made += Object.keys((picks[currentPlayer] && picks[currentPlayer][ROUND_KEYS[i]]) || {}).length;
-  }
-  document.getElementById('progressLabel').textContent = made + ' / 63 picks made';
-  document.getElementById('progressBar').style.width = Math.round(made / 63 * 100) + '%';
-}
-
-// ── Summary ──
-function renderSummary() {
-  var el = document.getElementById('summaryContent');
-  var hasAny = false;
-  for (var p = 0; p < 6; p++) {
-    for (var ri = 0; ri < ROUND_KEYS.length; ri++) {
-      if (Object.keys((picks[p] && picks[p][ROUND_KEYS[ri]]) || {}).length > 0) { hasAny = true; break; }
-    }
-  }
-  if (!hasAny) {
-    el.innerHTML = '<div class="empty-state"><span class="big">NO PICKS YET</span>Go to the Picks tab to start entering brackets.</div>';
+  if(matchups.length===0||matchups.every(function(m){return !m.t1&&!m.t2;})){
+    area.innerHTML='<div class="empty-state"><span class="big">NO DATA YET</span>Complete previous rounds in the Picks tab first.</div>';
     return;
   }
-  var html = '';
+  area.innerHTML=html;
+}
 
-  // Champions
-  html += '<div class="summary-section-title">🏆 CHAMPION PICKS</div><div class="champ-grid">';
-  for (var i = 0; i < 6; i++) {
-    var name = players[i] || DEFAULT_NAMES[i];
-    var cv = picks[i] && picks[i]['champ'] ? Object.values(picks[i]['champ']) : [];
-    html += '<div class="champ-card"><div class="champ-player"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:' + COLORS[i] + ';margin-right:5px;vertical-align:middle"></span>' + name + '</div>' +
-      (cv.length > 0 ? '<div class="champ-team">' + cv[0] + '</div>' : '<div class="champ-no-pick">No pick yet</div>') + '</div>';
-  }
-  html += '</div>';
+function buildBracketRow(m,rk,result_map) {
+  var result=result_map[m.id]||null;
 
-  // Agreement
-  html += '<div class="summary-section-title">⚡ AGREEMENT &amp; DISAGREEMENT</div>';
-  html += '<div class="section-box"><p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem">Round of 64 — sorted by most split matchups first.</p>';
-  var r64flat = getR64Flat();
-  var splitData = [];
-  for (var mi = 0; mi < r64flat.length; mi++) {
-    var m = r64flat[mi];
-    var c1=0,c2=0,p1=[],p2=[];
-    for (var pi=0;pi<6;pi++) {
-      var pk = picks[pi] && picks[pi]['r64'] ? picks[pi]['r64'][m.id] : null;
-      if (pk===m.t1){c1++;p1.push(pi);}
-      else if(pk===m.t2){c2++;p2.push(pi);}
+  // Matchup cell
+  var t1win=result&&result===m.t1,t2win=result&&result===m.t2;
+  var t1cls=t1win?' actual-winner':result&&!t1win&&m.t1?' actual-loser':'';
+  var t2cls=t2win?' actual-winner':result&&!t2win&&m.t2?' actual-loser':'';
+  var s1=m.s1?'<span class="ms">'+m.s1+'</span>':'<span class="ms">—</span>';
+  var s2=m.s2?'<span class="ms">'+m.s2+'</span>':'<span class="ms">—</span>';
+  var t1txt=m.t1||'<span style="color:#ccc">TBD</span>';
+  var t2txt=m.t2||'<span style="color:#ccc">TBD</span>';
+
+  var matchupCell='<td><div class="matchup-cell"><div class="matchup-seeds">'+s1+'<span class="vs-dot">·</span>'+s2+'</div><div class="matchup-teams"><span class="mt'+t1cls+'">'+t1txt+'</span><span class="mt'+t2cls+'">'+t2txt+'</span></div></div></td>';
+
+  // Player pick cells
+  var pickCells='';
+  for(var pi=0;pi<6;pi++){
+    var ppick=(picks[pi]&&picks[pi][rk])?picks[pi][rk][m.id]:null;
+    if(!ppick){
+      pickCells+='<td class="pick-cell no-pick">—</td>';
+    } else if(!result){
+      // No result yet — just show their pick
+      var pickColor=ppick===m.t1?COLORS[pi]:COLORS[pi];
+      pickCells+='<td class="pick-cell pending"><span style="color:'+COLORS[pi]+';font-weight:600">'+ppick+'</span></td>';
+    } else {
+      // Result known
+      var correct=(ppick===result);
+      var seed=getSeedOfTeam(ppick);
+      var pts=ROUND_POINTS[rk]+seed;
+      if(correct){
+        pickCells+='<td class="pick-cell correct">'+ppick+'<br><span style="font-size:0.63rem;font-weight:700;color:var(--green-dark)">+'+pts+'pts</span></td>';
+      } else {
+        pickCells+='<td class="pick-cell wrong">'+ppick+'</td>';
+      }
     }
-    var tot=c1+c2;
-    if(tot===0) continue;
+  }
+  return '<tr>'+matchupCell+pickCells+'</tr>';
+}
+
+// ══════════════════════════════
+//  PICKS PAGE
+// ══════════════════════════════
+function renderPicksPage(){renderPlayerTabs();renderRoundTabs();renderMatchups();updateProgress();}
+function renderPlayerTabs(){
+  var el=document.getElementById('playerTabs'),html='';
+  for(var i=0;i<6;i++){var n=players[i]||DEFAULT_NAMES[i];var s=(i===currentPlayer)?'background:'+COLORS[i]+';border-color:'+COLORS[i]+';color:#fff;':'';html+='<div class="player-tab'+(i===currentPlayer?' active':'')+'" style="'+s+'" onclick="selectPlayer('+i+')">'+n+'</div>';}
+  el.innerHTML=html;
+}
+window.selectPlayer=function(i){currentPlayer=i;renderPlayerTabs();renderMatchups();updateProgress();};
+function renderRoundTabs(){
+  var el=document.getElementById('roundTabs'),html='';
+  for(var i=0;i<ROUND_KEYS.length;i++){var k=ROUND_KEYS[i];html+='<button class="round-tab'+(k===currentRound?' active':'')+'" onclick="selectRound(\''+k+'\')">'+ROUND_LABELS[k]+'</button>';}
+  el.innerHTML=html;
+}
+window.selectRound=function(k){currentRound=k;renderRoundTabs();renderMatchups();};
+function renderMatchups(){
+  var area=document.getElementById('matchupArea'),matchups=getMatchupsForRound(currentRound),html='';
+  function doGrid(list){var h='<div class="matchup-grid">';for(var g=0;g<list.length;g++)h+=buildPickCard(list[g]);return h+'</div>';}
+  var doRegions=(currentRound==='r64'||currentRound==='r32'||currentRound==='s16'||currentRound==='e8');
+  if(doRegions){for(var r=0;r<REGIONS.length;r++){var reg=REGIONS[r];var rg=matchups.filter(function(m){return m.region===reg;});if(!rg.length)continue;html+='<div class="region-header">'+reg+' Region</div>'+doGrid(rg);}if(!html)html='<div class="empty-state"><span class="big">NO GAMES YET</span>Complete previous rounds first.</div>';}
+  else{html=doGrid(matchups);}
+  area.innerHTML=html;
+}
+function buildPickCard(m){
+  var picked=picks[currentPlayer]&&picks[currentPlayer][currentRound]?picks[currentPlayer][currentRound][m.id]:null;
+  var result=results[currentRound]?results[currentRound][m.id]:null;
+  var sel1=(picked&&picked===m.t1)?' selected':'',sel2=(picked&&picked===m.t2)?' selected':'';
+  var lk1=m.locked1?' locked':'',lk2=m.locked2?' locked':'';
+  var w1=(result&&result===m.t1)?' actual-winner-row':(result&&result!==m.t1&&m.t1)?' actual-loser-row':'';
+  var w2=(result&&result===m.t2)?' actual-winner-row':(result&&result!==m.t2&&m.t2)?' actual-loser-row':'';
+  var t1d=m.t1||'<span style="color:var(--muted);font-style:italic;font-size:0.78rem">Pending</span>';
+  var t2d=m.t2||'<span style="color:var(--muted);font-style:italic;font-size:0.78rem">Pending</span>';
+  var s1=m.s1?'<span class="seed">'+m.s1+'</span>':'<span class="seed">—</span>';
+  var s2=m.s2?'<span class="seed">'+m.s2+'</span>':'<span class="seed">—</span>';
+  var t1s=m.t1?m.t1.replace(/\\/g,'\\\\').replace(/'/g,"\\'"):'';
+  var t2s=m.t2?m.t2.replace(/\\/g,'\\\\').replace(/'/g,"\\'"):'';
+  var c1=(!m.locked1&&m.t1)?' onclick="makePick('+currentPlayer+',\''+currentRound+'\',\''+m.id+'\',\''+t1s+'\')"':'';
+  var c2=(!m.locked2&&m.t2)?' onclick="makePick('+currentPlayer+',\''+currentRound+'\',\''+m.id+'\',\''+t2s+'\')"':'';
+  var label=(m.region?m.region+' · ':'')+m.id;
+  var rb=result?'<span style="font-size:0.58rem;color:var(--green);font-weight:700;margin-left:auto">✓ RESULT IN</span>':'';
+  return '<div class="matchup-card"><div class="matchup-card-header">'+label+rb+'</div><div>'+
+    '<div class="team-row'+sel1+lk1+w1+'"'+c1+'>'+s1+'<span class="team-name">'+t1d+'</span><span class="pick-check">✓</span></div>'+
+    '<div class="team-row'+sel2+lk2+w2+'"'+c2+'>'+s2+'<span class="team-name">'+t2d+'</span><span class="pick-check">✓</span></div>'+
+    '</div></div>';
+}
+window.makePick=function(pIdx,rk,mid,team){
+  if(!picks[pIdx])picks[pIdx]={};if(!picks[pIdx][rk])picks[pIdx][rk]={};
+  picks[pIdx][rk][mid]=team;clearDownstream(pIdx,rk,mid);renderMatchups();updateProgress();scheduleSave();
+};
+function clearDownstream(pIdx,rk,mid){
+  var ri=ROUND_KEYS.indexOf(rk);if(ri>=ROUND_KEYS.length-1)return;
+  var nk=ROUND_KEYS[ri+1],cur=getMatchupsForRound(rk,pIdx),idx=-1;
+  for(var i=0;i<cur.length;i++)if(cur[i].id===mid){idx=i;break;}
+  if(idx<0)return;
+  var next=getMatchupsForRound(nk,pIdx),ni=Math.floor(idx/2);
+  if(next[ni]){if(picks[pIdx][nk])delete picks[pIdx][nk][next[ni].id];clearDownstream(pIdx,nk,next[ni].id);}
+}
+function updateProgress(){
+  var made=0;for(var i=0;i<ROUND_KEYS.length;i++)made+=Object.keys((picks[currentPlayer]&&picks[currentPlayer][ROUND_KEYS[i]])||{}).length;
+  document.getElementById('progressLabel').textContent=made+' / 63 picks made';
+  document.getElementById('progressBar').style.width=Math.round(made/63*100)+'%';
+}
+
+// ══════════════════════════════
+//  SCORING PAGE
+// ══════════════════════════════
+function renderScoringPage(){renderScoringRoundTabs();renderScoringMatchups();}
+function renderScoringRoundTabs(){
+  var el=document.getElementById('scoringRoundTabs'),html='';
+  for(var i=0;i<ROUND_KEYS.length;i++){var k=ROUND_KEYS[i];html+='<button class="round-tab'+(k===currentScoringRound?' active':'')+'" onclick="selectScoringRound(\''+k+'\')">'+ROUND_LABELS[k]+'</button>';}
+  el.innerHTML=html;
+}
+window.selectScoringRound=function(k){currentScoringRound=k;renderScoringRoundTabs();renderScoringMatchups();};
+function renderScoringMatchups(){
+  var area=document.getElementById('scoringArea'),matchups=getScoringMatchups(currentScoringRound),pts=ROUND_POINTS[currentScoringRound],html='';
+  function doGrid(list){var h='<div class="matchup-grid">';for(var g=0;g<list.length;g++)h+=buildScoringCard(list[g],pts);return h+'</div>';}
+  var doRegions=(currentScoringRound==='r64'||currentScoringRound==='r32'||currentScoringRound==='s16'||currentScoringRound==='e8');
+  if(doRegions){for(var r=0;r<REGIONS.length;r++){var reg=REGIONS[r];var rg=matchups.filter(function(m){return m.region===reg;});if(!rg.length)continue;html+='<div class="region-header">'+reg+' Region</div>'+doGrid(rg);}if(!html)html='<div class="empty-state"><span class="big">NO GAMES YET</span>Enter Round of 64 results first.</div>';}
+  else{html=doGrid(matchups);}
+  area.innerHTML=html;
+}
+function buildScoringCard(m,pts){
+  var res=results[currentScoringRound]?results[currentScoringRound][m.id]:null;
+  var sel1=(res&&res===m.t1)?' selected':'',sel2=(res&&res===m.t2)?' selected':'';
+  var lk1=m.locked1?' locked':'',lk2=m.locked2?' locked':'';
+  var t1d=m.t1||'<span style="color:var(--muted);font-style:italic;font-size:0.78rem">Awaiting result</span>';
+  var t2d=m.t2||'<span style="color:var(--muted);font-style:italic;font-size:0.78rem">Awaiting result</span>';
+  var t1s=m.t1?m.t1.replace(/\\/g,'\\\\').replace(/'/g,"\\'"):'';
+  var t2s=m.t2?m.t2.replace(/\\/g,'\\\\').replace(/'/g,"\\'"):'';
+  var c1=(!m.locked1&&m.t1)?' onclick="markResult(\''+currentScoringRound+'\',\''+m.id+'\',\''+t1s+'\')"':'';
+  var c2=(!m.locked2&&m.t2)?' onclick="markResult(\''+currentScoringRound+'\',\''+m.id+'\',\''+t2s+'\')"':'';
+  var label=(m.region?m.region+' · ':'')+m.id;
+  // Show seed bonus
+  var seed1=m.t1?getSeedOfTeam(m.t1):1,seed2=m.t2?getSeedOfTeam(m.t2):1;
+  var pb1='<span style="font-size:0.58rem;background:var(--green-pale);color:var(--green-dark);padding:0.08rem 0.35rem;border-radius:6px;font-weight:700;margin-left:auto">'+(pts+seed1)+' pts</span>';
+  var pb2='<span style="font-size:0.58rem;background:var(--green-pale);color:var(--green-dark);padding:0.08rem 0.35rem;border-radius:6px;font-weight:700;margin-left:auto">'+(pts+seed2)+' pts</span>';
+  return '<div class="matchup-card"><div class="matchup-card-header">'+label+'</div><div>'+
+    '<div class="team-row'+sel1+lk1+'"'+c1+'><span class="seed">—</span><span class="team-name">'+t1d+'</span>'+pb1+'<span class="pick-check" style="margin-left:0.4rem">✓</span></div>'+
+    '<div class="team-row'+sel2+lk2+'"'+c2+'><span class="seed">—</span><span class="team-name">'+t2d+'</span>'+pb2+'<span class="pick-check" style="margin-left:0.4rem">✓</span></div>'+
+    '</div></div>';
+}
+window.markResult=function(rk,mid,team){
+  if(!results[rk])results[rk]={};
+  if(results[rk][mid]===team)delete results[rk][mid];else results[rk][mid]=team;
+  renderScoringMatchups();scheduleSave();
+};
+
+// ══════════════════════════════
+//  SCORING CALCULATION (Points + Seed)
+// ══════════════════════════════
+function calcScore(pIdx){
+  var total=0,bd={};
+  for(var ri=0;ri<ROUND_KEYS.length;ri++){
+    var rk=ROUND_KEYS[ri],pts=ROUND_POINTS[rk];
+    var rp=(picks[pIdx]&&picks[pIdx][rk])?picks[pIdx][rk]:{};
+    var rr=results[rk]||{},rs=0;
+    for(var mid in rr){
+      if(rp[mid]&&rp[mid]===rr[mid]){
+        var seed=getSeedOfTeam(rr[mid]);
+        rs+=pts+seed;
+      }
+    }
+    bd[rk]=rs;total+=rs;
+  }
+  return{total:total,breakdown:bd};
+}
+
+// ══════════════════════════════
+//  SUMMARY PAGE
+// ══════════════════════════════
+function renderSummary(){
+  var el=document.getElementById('summaryContent');
+  var hasAny=false;
+  for(var p=0;p<6;p++)for(var ri=0;ri<ROUND_KEYS.length;ri++)if(Object.keys((picks[p]&&picks[p][ROUND_KEYS[ri]])||{}).length>0){hasAny=true;break;}
+  if(!hasAny){el.innerHTML='<div class="empty-state"><span class="big">NO PICKS YET</span>Go to Picks to enter brackets.</div>';return;}
+
+  var html='';
+  var hasResults=ROUND_KEYS.some(function(rk){return results[rk]&&Object.keys(results[rk]).length>0;});
+
+  // ── LEADERBOARD ──
+  if(hasResults){
+    html+='<div class="section-title">🏆 LEADERBOARD</div><div class="section-box">';
+    html+='<div class="point-legend">';
+    for(var ri=0;ri<ROUND_KEYS.length;ri++)html+='<span class="point-chip">'+ROUND_LABELS[ROUND_KEYS[ri]]+': '+(ROUND_POINTS[ROUND_KEYS[ri]])+'+seed pts</span>';
+    html+='</div><div class="leaderboard">';
+    var scores=[];
+    for(var i=0;i<6;i++){var sc=calcScore(i);var chp=picks[i]&&picks[i]['champ']?Object.values(picks[i]['champ'])[0]:null;scores.push({idx:i,name:players[i]||DEFAULT_NAMES[i],score:sc.total,bd:sc.breakdown,champ:chp});}
+    scores.sort(function(a,b){return b.score-a.score;});
+    for(var si=0;si<scores.length;si++){
+      var s=scores[si],rank=si+1;
+      var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'';
+      var rcls=rank<=3?' rank-'+rank:'';
+      var bdParts=[];
+      for(var ri=0;ri<ROUND_KEYS.length;ri++){var rk=ROUND_KEYS[ri];if(s.bd[rk]>0)bdParts.push(ROUND_LABELS[rk].replace('Round of ','R')+': +'+s.bd[rk]);}
+      html+='<div class="lb-row'+rcls+'">';
+      if(medal)html+='<div class="lb-medal">'+medal+'</div>';else html+='<div class="lb-rank-num">'+rank+'</div>';
+      html+='<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+COLORS[s.idx]+';flex-shrink:0"></span>';
+      html+='<div style="flex:1"><div class="lb-name">'+s.name+'</div>';
+      if(s.champ)html+='<div class="lb-champ">Champion pick: '+s.champ+'</div>';
+      if(bdParts.length)html+='<div class="lb-breakdown">'+bdParts.join(' · ')+'</div>';
+      html+='</div><div style="text-align:right"><div class="lb-score">'+s.score+'</div><div class="lb-score-label">pts</div></div></div>';
+    }
+    html+='</div></div>';
+  }
+
+  // ── CHAMPION PICKS ──
+  html+='<div class="section-title">🏀 CHAMPION PICKS</div><div class="champ-grid">';
+  for(var i=0;i<6;i++){
+    var cv=picks[i]&&picks[i]['champ']?Object.values(picks[i]['champ']):[];
+    html+='<div class="champ-card"><div class="champ-player"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+COLORS[i]+';margin-right:4px;vertical-align:middle"></span>'+(players[i]||DEFAULT_NAMES[i])+'</div>'+(cv.length?'<div class="champ-team">'+cv[0]+'</div>':'<div class="champ-no-pick">No pick yet</div>')+'</div>';
+  }
+  html+='</div>';
+
+  // ── AGREEMENT / DISAGREEMENT ──
+  html+='<div class="section-title">⚡ AGREEMENT &amp; DISAGREEMENT</div><div class="section-box">';
+  html+='<p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Round of 64 picks — most split matchups shown first. Green bar = Team 1, blue bar = Team 2.</p>';
+  var flat=getR64Flat(),splitData=[];
+  for(var mi=0;mi<flat.length;mi++){
+    var m=flat[mi],c1=0,c2=0,p1=[],p2=[];
+    for(var pi=0;pi<6;pi++){var pk=picks[pi]&&picks[pi]['r64']?picks[pi]['r64'][m.id]:null;if(pk===m.t1){c1++;p1.push(pi);}else if(pk===m.t2){c2++;p2.push(pi);}}
+    var tot=c1+c2;if(!tot)continue;
     splitData.push({m:m,c1:c1,c2:c2,p1:p1,p2:p2,tot:tot,diff:Math.abs(c1-c2)});
   }
   splitData.sort(function(a,b){return a.diff-b.diff;});
-  if (splitData.length === 0) {
-    html += '<div style="color:var(--muted);font-size:0.85rem">No Round of 64 picks entered yet.</div>';
-  } else {
-    for (var si=0;si<splitData.length;si++) {
-      var d=splitData[si];
-      var pct1=Math.round(d.c1/d.tot*100),pct2=100-pct1;
-      var isSplit=d.c1>0&&d.c2>0;
-      html+='<div class="agree-card'+(isSplit?' split':'')+'"><div class="agree-matchup"><span class="agree-match-title">'+d.m.t1+' <span style="color:var(--muted);font-weight:400">vs</span> '+d.m.t2+'</span><span class="agree-region">'+d.m.region+'</span></div>';
-      html+='<div class="bar-row"><div class="bar-label"><span class="bar-label-name">'+d.m.t1+'</span><span class="bar-label-count">'+d.c1+'/'+d.tot+'</span></div><div class="agree-bar"><div class="agree-bar-fill" style="width:'+pct1+'%;background:'+COLORS[0]+'"></div></div>';
-      if(d.p1.length>0){html+='<div class="picker-pills">';for(var pi=0;pi<d.p1.length;pi++){var idx=d.p1[pi];html+='<span class="picker-pill" style="background:'+COLORS[idx]+'">'+(players[idx]||DEFAULT_NAMES[idx])+'</span>';}html+='</div>';}
-      html+='</div><div class="bar-row" style="margin-top:0.6rem"><div class="bar-label"><span class="bar-label-name">'+d.m.t2+'</span><span class="bar-label-count">'+d.c2+'/'+d.tot+'</span></div><div class="agree-bar"><div class="agree-bar-fill" style="width:'+pct2+'%;background:'+COLORS[2]+'"></div></div>';
-      if(d.p2.length>0){html+='<div class="picker-pills">';for(var pi=0;pi<d.p2.length;pi++){var idx=d.p2[pi];html+='<span class="picker-pill" style="background:'+COLORS[idx]+'">'+(players[idx]||DEFAULT_NAMES[idx])+'</span>';}html+='</div>';}
-      html+='</div>'+(isSplit?'<div class="split-badge">⚡ SPLIT PICK</div>':'')+'</div>';
+  if(!splitData.length){html+='<div style="color:var(--muted);font-size:0.85rem">No picks entered yet.</div>';}
+  else{
+    for(var si=0;si<splitData.length;si++){
+      var d=splitData[si],pct1=Math.round(d.c1/d.tot*100),pct2=100-pct1,isSplit=d.c1>0&&d.c2>0;
+      html+='<div class="agree-card'+(isSplit?' split':' unanimous')+'"><div class="agree-top"><span class="agree-match-title">'+d.m.t1+' <span style="color:var(--muted);font-weight:400;font-size:0.78rem">vs</span> '+d.m.t2+'</span><span class="agree-region-badge">'+d.m.region+'</span></div>';
+      // Team 1 bar — forest green
+      html+='<div class="bar-row"><div class="bar-label"><span class="bar-label-name">'+d.m.t1+'</span><span class="bar-label-count">'+d.c1+'/'+d.tot+'</span></div>';
+      html+='<div class="agree-bar"><div class="agree-bar-fill" style="width:'+pct1+'%;background:#2d6a4f"></div></div>';
+      if(d.p1.length){html+='<div class="picker-pills">';d.p1.forEach(function(idx){html+='<span class="picker-pill" style="background:'+COLORS[idx]+'">'+(players[idx]||DEFAULT_NAMES[idx])+'</span>';});html+='</div>';}
+      html+='</div>';
+      // Team 2 bar — blue
+      html+='<div class="bar-row"><div class="bar-label"><span class="bar-label-name">'+d.m.t2+'</span><span class="bar-label-count">'+d.c2+'/'+d.tot+'</span></div>';
+      html+='<div class="agree-bar"><div class="agree-bar-fill" style="width:'+pct2+'%;background:#1e6091"></div></div>';
+      if(d.p2.length){html+='<div class="picker-pills">';d.p2.forEach(function(idx){html+='<span class="picker-pill" style="background:'+COLORS[idx]+'">'+(players[idx]||DEFAULT_NAMES[idx])+'</span>';});html+='</div>';}
+      html+='</div>';
+      if(isSplit)html+='<div class="split-badge">⚡ SPLIT PICK</div>';
+      html+='</div>';
     }
   }
-  html += '</div>';
+  html+='</div>';
 
-  // Completion
-  html += '<div class="summary-section-title">📋 PICKS COMPLETED</div><div class="section-box"><div class="completion-grid">';
-  for (var i=0;i<6;i++) {
-    var made=0;
-    for(var ri=0;ri<ROUND_KEYS.length;ri++) made+=Object.keys((picks[i]&&picks[i][ROUND_KEYS[ri]])||{}).length;
+  // ── COMPLETION ──
+  html+='<div class="section-title">📋 PICKS COMPLETED</div><div class="section-box"><div class="completion-grid">';
+  for(var i=0;i<6;i++){
+    var made=0;for(var ri=0;ri<ROUND_KEYS.length;ri++)made+=Object.keys((picks[i]&&picks[i][ROUND_KEYS[ri]])||{}).length;
     var pct=Math.round(made/63*100);
-    html+='<div class="completion-card"><div class="completion-name"><span style="width:10px;height:10px;border-radius:50%;background:'+COLORS[i]+';display:inline-block;flex-shrink:0"></span>'+(players[i]||DEFAULT_NAMES[i])+'</div><div class="completion-count">'+made+' / 63 picks</div><div class="completion-bar"><div class="completion-bar-fill" style="width:'+pct+'%;background:'+COLORS[i]+'"></div></div></div>';
+    html+='<div class="completion-card"><div class="completion-name"><span style="width:9px;height:9px;border-radius:50%;background:'+COLORS[i]+';display:inline-block;flex-shrink:0"></span>'+(players[i]||DEFAULT_NAMES[i])+'</div><div class="completion-count">'+made+' / 63 picks</div><div class="completion-bar"><div class="completion-bar-fill" style="width:'+pct+'%;background:'+COLORS[i]+'"></div></div></div>';
   }
-  html += '</div></div>';
-  el.innerHTML = html;
+  html+='</div></div>';
+  el.innerHTML=html;
 }
 
-// ── Boot ──
 loadData();
 </script>
 </body>
