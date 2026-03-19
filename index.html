@@ -752,13 +752,7 @@ function calcRiskiness(pIdx) {
     else if(pick===m.t2&&m.s2>m.s1){score+=m.s2;upsets.push({team:m.t2,seed:m.s2,opp:m.t1,oppSeed:m.s1});}
   }
   upsets.sort(function(a,b){return b.seed-a.seed;});
-  var label;
-  if(score===0)label='Chalk Monster';
-  else if(score<=12)label='Playing It Safe';
-  else if(score<=28)label='Cautiously Bold';
-  else if(score<=50)label='Chaos Agent';
-  else label='Absolute Maniac';
-  return{score:score,label:label,upsets:upsets};
+  return{score:score,upsets:upsets};
 }
 
 function renderRiskiness(){
@@ -773,7 +767,13 @@ function renderRiskiness(){
     var totalPicks=Object.keys((picks[i]&&picks[i]['r64'])||{}).length;
     var upsetCount=r.upsets.length;
     var pct=totalPicks>0?Math.round(upsetCount/totalPicks*100):0;
-    riskData.push({idx:i,name:players[i]||DEFAULT_NAMES[i],risk:r,upsetCount:upsetCount,totalPicks:totalPicks,pct:pct});
+    var label;
+    if(pct===0)label='Chalk Monster';
+    else if(pct<=12)label='Playing It Safe';
+    else if(pct<=28)label='Cautiously Bold';
+    else if(pct<=50)label='Chaos Agent';
+    else label='Absolute Maniac';
+    riskData.push({idx:i,name:players[i]||DEFAULT_NAMES[i],risk:r,upsetCount:upsetCount,totalPicks:totalPicks,pct:pct,label:label});
   }
   riskData.sort(function(a,b){return b.pct-a.pct;});
   var maxPct=riskData[0].pct||1;
@@ -824,8 +824,8 @@ function renderRiskiness(){
     var d=riskData[si];
     var rank=si+1;
     var barPct=Math.round(d.pct/maxPct*100);
-    var lcolor=labelColors[d.risk.label]||'var(--green)';
-    var lemoji=labelEmoji[d.risk.label]||'';
+    var lcolor=labelColors[d.label]||'var(--green)';
+    var lemoji=labelEmoji[d.label]||'';
 
     html+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.07)">';
     // Header strip
@@ -843,7 +843,7 @@ function renderRiskiness(){
     html+='<div style="font-size:0.78rem;color:var(--muted)">'+d.upsetCount+' upset'+(d.upsetCount!==1?'s':'')+' / '+d.totalPicks+' picks</div>';
     html+='</div></div>';
     // Label
-    html+='<div style="display:inline-flex;align-items:center;gap:0.3rem;background:'+lcolor+';color:#fff;font-size:0.73rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:20px;margin-bottom:0.85rem">'+lemoji+' '+d.risk.label+'</div>';
+    html+='<div style="display:inline-flex;align-items:center;gap:0.3rem;background:'+lcolor+';color:#fff;font-size:0.73rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:20px;margin-bottom:0.85rem">'+lemoji+' '+d.label+'</div>';
     // Bar
     html+='<div style="margin-bottom:0.85rem">';
     html+='<div style="font-size:0.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.28rem">Riskiness vs group</div>';
