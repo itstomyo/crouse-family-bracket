@@ -244,6 +244,7 @@ nav button:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.15);
     <nav>
       <button onclick="showPage('bracket')">🏀 Bracket</button>
       <button onclick="showPage('summary')">📊 Summary</button>
+      <button onclick="showPage('riskiness')">🎲 Riskiness</button>
       <button onclick="showPage('scoring')">🎯 Scoring</button>
       <button onclick="showPage('picks')">✏️ Picks</button>
       <button onclick="showPage('setup')">⚙️ Setup</button>
@@ -265,6 +266,13 @@ nav button:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.15);
   <div class="page-title">SUMMARY</div>
   <div class="page-sub">Leaderboard, champion picks, and where the family agrees or disagrees.</div>
   <div id="summaryContent"></div>
+</div>
+
+<!-- ═══ RISKINESS ═══ -->
+<div id="page-riskiness" class="page">
+  <div class="page-title">BRACKET RISKINESS</div>
+  <div class="page-sub">Who swung the hardest in Round of 64? Riskiness = sum of seeds of all upset picks. Ranked relative to the boldest picker in the group.</div>
+  <div id="riskinessContent"></div>
 </div>
 
 <!-- ═══ SCORING ═══ -->
@@ -411,6 +419,7 @@ function refreshPage() {
   var id = a.id;
   if (id==='page-bracket') renderBracket();
   else if (id==='page-summary') renderSummary();
+  else if (id==='page-riskiness') renderRiskiness();
   else if (id==='page-scoring') renderScoringMatchups();
   else if (id==='page-picks') { renderPlayerTabs(); renderMatchups(); updateProgress(); }
   else if (id==='page-setup') renderSetup();
@@ -437,10 +446,11 @@ window.showPage = function(name) {
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('nav button').forEach(function(b){b.classList.remove('active');});
   document.getElementById('page-'+name).classList.add('active');
-  var pages=['bracket','summary','scoring','picks','setup'];
+  var pages=['bracket','summary','riskiness','scoring','picks','setup'];
   document.querySelectorAll('nav button')[pages.indexOf(name)].classList.add('active');
   if (name==='bracket') renderBracket();
   else if (name==='summary') renderSummary();
+  else if (name==='riskiness') renderRiskiness();
   else if (name==='scoring') renderScoringPage();
   else if (name==='picks') renderPicksPage();
 };
@@ -738,31 +748,99 @@ function calcRiskiness(pIdx) {
     var m=r64flat[i];
     var pick=picks[pIdx]&&picks[pIdx]['r64']?picks[pIdx]['r64'][m.id]:null;
     if(!pick)continue;
-    if(pick===m.t1&&m.s1>m.s2){score+=m.s1;upsets.push({team:m.t1,seed:m.s1,round:'R64'});}
-    else if(pick===m.t2&&m.s2>m.s1){score+=m.s2;upsets.push({team:m.t2,seed:m.s2,round:'R64'});}
+    if(pick===m.t1&&m.s1>m.s2){score+=m.s1;upsets.push({team:m.t1,seed:m.s1,opp:m.t2,oppSeed:m.s2});}
+    else if(pick===m.t2&&m.s2>m.s1){score+=m.s2;upsets.push({team:m.t2,seed:m.s2,opp:m.t1,oppSeed:m.s1});}
   }
-  var laterRounds=['r32','s16','e8','ff','champ'];
-  var roundShort={r32:'R32',s16:'S16',e8:'E8',ff:'FF',champ:'Champ'};
-  for(var ri=0;ri<laterRounds.length;ri++){
-    var rk=laterRounds[ri];
-    var matchups=getMatchupsForRound(rk,pIdx);
-    var rp=picks[pIdx]&&picks[pIdx][rk]?picks[pIdx][rk]:{};
-    for(var mi=0;mi<matchups.length;mi++){
-      var m2=matchups[mi];
-      var pick2=rp[m2.id];
-      if(!pick2||!m2.t1||!m2.t2)continue;
-      var seed1=getSeedOfTeam(m2.t1),seed2=getSeedOfTeam(m2.t2);
-      if(pick2===m2.t1&&seed1>seed2){score+=seed1;upsets.push({team:m2.t1,seed:seed1,round:roundShort[rk]});}
-      else if(pick2===m2.t2&&seed2>seed1){score+=seed2;upsets.push({team:m2.t2,seed:seed2,round:roundShort[rk]});}
+  upsets.sort(function(a,b){return b.seed-a.seed;});
+  var label;
+  if(score===0)label='Chalk Monster';
+  else if(score<=12)label='Playing It Safe';
+  else if(score<=28)label='Cautiously Bold';
+  else if(score<=50)label='Chaos Agent';
+  else label='Absolute Maniac';
+  return{score:score,label:label,upsets:upsets};
+}
+
+function renderRiskiness(){
+  var el=document.getElementById('riskinessContent');
+  var hasAny=false;
+  for(var p=0;p<6;p++)if(Object.keys((picks[p]&&picks[p]['r64'])||{}).length>0){hasAny=true;break;}
+  if(!hasAny){el.innerHTML='<div class="empty-state"><span class="big">NO PICKS YET</span>Enter Round of 64 picks first.</div>';return;}
+
+  var riskData=[];
+  for(var i=0;i<6;i++){var r=calcRiskiness(i);riskData.push({idx:i,name:players[i]||DEFAULT_NAMES[i],risk:r});}
+  riskData.sort(function(a,b){return b.risk.score-a.risk.score;});
+  var maxScore=riskData[0].risk.score||1;
+
+  // Most dangerous pick across all players
+  var dangerPick=null,dangerPlayer=null;
+  for(var i=0;i<riskData.length;i++){
+    var upsets=riskData[i].risk.upsets;
+    for(var u=0;u<upsets.length;u++){
+      if(!dangerPick||upsets[u].seed>dangerPick.seed){dangerPick=upsets[u];dangerPlayer=riskData[i];}
     }
   }
-  var label,emoji;
-  if(score===0){label='Chalk Monster';emoji='zz';}
-  else if(score<=15){label='Playing It Safe';emoji='hmm';}
-  else if(score<=35){label='Cautiously Bold';emoji='fire';}
-  else if(score<=60){label='Chaos Agent';emoji='boom';}
-  else{label='Absolute Maniac';emoji='wild';}
-  return{score:score,label:label,emoji:emoji,upsets:upsets};
+
+  var labelEmoji={'Chalk Monster':'😴','Playing It Safe':'🤔','Cautiously Bold':'😏','Chaos Agent':'🔥','Absolute Maniac':'🤯'};
+  var html='';
+
+  // Most Dangerous Pick callout
+  if(dangerPick){
+    html+='<div style="background:var(--green-dark);border-radius:14px;padding:1.5rem;margin-bottom:1.75rem;color:#fff;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap">';
+    html+='<div style="font-size:2.5rem">&#128293;</div>';
+    html+='<div style="flex:1">';
+    html+='<div style="font-family:Bebas Neue,sans-serif;font-size:0.75rem;letter-spacing:2px;color:'+COLORS[dangerPlayer.idx]+';margin-bottom:0.2rem">MOST DANGEROUS PICK</div>';
+    html+='<div style="font-family:Bebas Neue,sans-serif;font-size:1.75rem;letter-spacing:2px;color:#fff;line-height:1.1">'+dangerPick.team+'</div>';
+    html+='<div style="font-size:0.82rem;color:rgba(255,255,255,0.7);margin-top:0.25rem">('+dangerPick.seed+'-seed) over '+dangerPick.opp+' ('+dangerPick.oppSeed+'-seed) &mdash; picked by <strong style="color:#fff">'+dangerPlayer.name+'</strong></div>';
+    html+='</div>';
+    html+='<div style="text-align:center"><div style="font-family:Bebas Neue,sans-serif;font-size:3rem;color:'+COLORS[dangerPlayer.idx]+';line-height:1">'+dangerPick.seed+'</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase">Seed</div></div>';
+    html+='</div>';
+  }
+
+  // Player cards
+  html+='<div style="display:flex;flex-direction:column;gap:0.75rem">';
+  for(var si=0;si<riskData.length;si++){
+    var d=riskData[si];
+    var barPct=Math.round(d.risk.score/maxScore*100);
+    var rank=si+1;
+    var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'';
+    var emoji=labelEmoji[d.risk.label]||'';
+    var rcls=rank<=3?' rank-'+rank:'';
+
+    html+='<div class="lb-row'+rcls+'" style="flex-direction:column;align-items:stretch;gap:0.6rem;padding:1rem 1.1rem">';
+
+    // Top row: rank, name, label, score
+    html+='<div style="display:flex;align-items:center;gap:0.75rem">';
+    if(medal)html+='<span style="font-size:1.3rem;width:28px;text-align:center;flex-shrink:0">'+medal+'</span>';
+    else html+='<span style="font-family:Bebas Neue,sans-serif;font-size:1.2rem;width:28px;text-align:center;color:var(--muted);flex-shrink:0">'+rank+'</span>';
+    html+='<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+COLORS[d.idx]+';flex-shrink:0"></span>';
+    html+='<span style="font-weight:600;font-size:0.95rem;flex:1">'+d.name+'</span>';
+    html+='<span style="font-size:0.8rem;color:var(--muted)">'+emoji+' '+d.risk.label+'</span>';
+    html+='<span style="font-family:Bebas Neue,sans-serif;font-size:1.6rem;color:var(--green-dark);margin-left:0.75rem">'+d.risk.score+'</span>';
+    html+='</div>';
+
+    // Bar (relative to group max)
+    html+='<div style="position:relative;height:8px;background:var(--border);border-radius:4px;overflow:hidden">';
+    html+='<div style="height:100%;width:'+barPct+'%;background:'+COLORS[d.idx]+';border-radius:4px;transition:width 0.5s"></div>';
+    html+='</div>';
+
+    // Upset picks list
+    if(d.risk.upsets.length>0){
+      html+='<div style="display:flex;flex-wrap:wrap;gap:0.35rem">';
+      for(var u=0;u<d.risk.upsets.length;u++){
+        var up=d.risk.upsets[u];
+        html+='<span style="font-size:0.7rem;background:var(--green-pale);color:var(--green-dark);padding:0.18rem 0.55rem;border-radius:20px;font-weight:600">';
+        html+=up.seed+'-seed '+up.team+' over '+up.opp;
+        html+='</span>';
+      }
+      html+='</div>';
+    } else {
+      html+='<div style="font-size:0.72rem;color:var(--muted);font-style:italic">No upset picks — pure chalk</div>';
+    }
+    html+='</div>';
+  }
+  html+='</div>';
+  el.innerHTML=html;
 }
 
 // ══════════════════════════════
@@ -842,34 +920,6 @@ function renderSummary(){
     }
   }
   html+='</div>';
-
-  // -- RISKINESS --
-  html+='<div class="section-title">BRACKET RISKINESS</div><div class="section-box">';
-  html+='<p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Score = sum of seeds of all upset picks across the full bracket. The higher the score, the more chaos you are betting on.</p>';
-  var riskScores=[];
-  for(var i=0;i<6;i++){var rsk=calcRiskiness(i);riskScores.push({idx:i,name:players[i]||DEFAULT_NAMES[i],risk:rsk});}
-  riskScores.sort(function(a,b){return b.risk.score-a.risk.score;});
-  html+='<div class="leaderboard">';
-  for(var si=0;si<riskScores.length;si++){
-    var rs=riskScores[si];
-    var maxScore=riskScores[0].risk.score;
-    var barPct=maxScore>0?Math.round(rs.risk.score/maxScore*100):0;
-    var upsetList=rs.risk.upsets.map(function(u){return u.team+' ('+u.seed+'-seed, '+u.round+')';}).join(', ');
-    var riskLabels={'Chalk Monster':'😴 Chalk Monster','Playing It Safe':'🤔 Playing It Safe','Cautiously Bold':'😏 Cautiously Bold','Chaos Agent':'🔥 Chaos Agent','Absolute Maniac':'🤯 Absolute Maniac'};
-    var labelDisplay=riskLabels[rs.risk.label]||rs.risk.label;
-    html+='<div class="lb-row" style="flex-direction:column;align-items:flex-start;gap:0.4rem">';
-    html+='<div style="display:flex;align-items:center;gap:0.75rem;width:100%">';
-    html+='<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+COLORS[rs.idx]+';flex-shrink:0"></span>';
-    html+='<span style="font-weight:600;font-size:0.93rem;flex:1">'+rs.name+'</span>';
-    html+='<span style="font-size:0.78rem;color:var(--muted);margin-right:0.75rem">'+labelDisplay+'</span>';
-    html+='<span style="font-family:\"Bebas Neue\",sans-serif;font-size:1.5rem;color:var(--green-dark)">'+rs.risk.score+' pts</span>';
-    html+='</div>';
-    html+='<div style="width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+barPct+'%;background:'+COLORS[rs.idx]+';border-radius:3px"></div></div>';
-    if(upsetList)html+='<div style="font-size:0.68rem;color:var(--muted);font-style:italic">Upset picks: '+upsetList+'</div>';
-    else html+='<div style="font-size:0.68rem;color:var(--muted);font-style:italic">No upset picks chosen</div>';
-    html+='</div>';
-  }
-  html+='</div></div>';
 
   // ── COMPLETION ──
   html+='<div class="section-title">📋 PICKS COMPLETED</div><div class="section-box"><div class="completion-grid">';
